@@ -1,0 +1,17 @@
+<mat-sidenav-container>
+  <mat-sidenav #sidenav mode="over" [fixedInViewport]="true">
+    <div>
+      <button mat-button (click)="sidenav.toggle()">Hide</button>
+    </div>
+    <div>
+    <mat-form-field appearance="fill">
+      <mat-label>Layer mode</mat-label>
+      <mat-select #layer (selectionChange)="layerChanged($event.value)" value="tiles">
+        <mat-option value="tiles">Vector Tiles</mat-option>
+        <mat-option value="wfs">Vector WFS</mat-option>
+      </mat-select>
+    </mat-form-field>
+    </div>
+  </mat-sidenav>
+</mat-sidenav-container>
+
