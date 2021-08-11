@@ -15,6 +15,7 @@ import {GML, GeoJSON} from "ol/format";
 import {bbox as bboxStrategy} from 'ol/loadingstrategy';
 //import {tile as tileStrategy} from 'ol/loadingstrategy';
 //import {bbox} from "ol/loadingstrategy";
+import { SideNavService } from '../../services/side-nav.service';
 import GML3 from "ol/format/GML3";
 import MVT from "ol/format/MVT";
 import {Select} from "ol/interaction";
@@ -37,12 +38,37 @@ export class MapComponent implements OnInit, AfterViewInit {
   private popupOverlay: Overlay;
   @ViewChild('popup') popup: ElementRef;
   vtl: VectorTile<any>;
+  selectionLayer: VectorTile<any>;
+  vtls: VectorTileSource<any>;
 
 
 
-  constructor(private elementRef: ElementRef) {
+  constructor(private elementRef: ElementRef, private sideNavService: SideNavService) {
+  }
+  setLayer(layer: string) {
+    console.log("Layer chaged on map: " + layer);
+    if (layer == "tiles") {
+
+      this.map.removeLayer(this.wfs);
+      //this.map.addLayer(this.selectionLayer);
+      //this.map.addLayer(this.vtl);
+
+      this.vtl.setVisible(true);
+      this.selectionLayer.setVisible(true);
+      this.wfs.setVisible(false);
+
+    } else {
+      //this.map.removeLayer(this.vtl);
+      //this.map.removeLayer(this.selectionLayer);
+      this.map.addLayer(this.wfs);
+
+      this.vtl.setVisible(false);
+      this.selectionLayer.setVisible(false);
+      this.wfs.setVisible(true);
+    }
   }
   ngOnInit() {
+    this.map.IMAGE_RELOAD_ATTEMPTS = 3;
     this.map.setTarget(this.elementRef.nativeElement);
     this.map.setView(new View({
       center: olProj.fromLonLat([12.4659589, 41.9101776]),//[146, -42]),
@@ -105,6 +131,13 @@ export class MapComponent implements OnInit, AfterViewInit {
       strategy: bboxStrategy,
     });
 
+    this.vtls = new VectorTileSource({
+      tilePixelRatio: 1, // oversampling when > 1
+      tileGrid: createXYZ({maxZoom: 19}),
+      format: new MVT({featureClass: Feature}),
+      url: 'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm@EPSG%3A3857@pbf' +
+        '/{z}/{x}/{-y}.pbf'
+    })
 
     this.vtl = new VectorTile({
 
@@ -118,13 +151,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         }),
       }),
 
-      source: new VectorTileSource({
-        tilePixelRatio: 1, // oversampling when > 1
-        tileGrid: createXYZ({maxZoom: 19}),
-        format: new MVT({featureClass: Feature}),
-        url: 'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm@EPSG%3A3857@pbf' +
-          '/{z}/{x}/{-y}.pbf'
-      })
+      source: this.vtls
     });
 
     this.wfs = new VectorLayer({
@@ -177,7 +204,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     // Selection
     let selection = {};
 
-    const selectionLayer = new VectorTile({
+    this.selectionLayer = new VectorTile({
       map: this.map,
       renderMode: 'vector',
       source: this.vtl.getSource(),
@@ -198,10 +225,10 @@ export class MapComponent implements OnInit, AfterViewInit {
 
     this.map.on(['click'], (event) => {
 
-      this.vtl.getFeatures(event.pixel).then(function (features) {
+      this.vtl.getFeatures(event.pixel).then( (features) => {
         if (!features.length) {
           selection = {};
-          selectionLayer.changed();
+          this.selectionLayer.changed();
           return;
         }
         const feature = features[0];
@@ -216,7 +243,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         // add selected feature to lookup
         selection[fid] = feature;
 
-        selectionLayer.changed();
+        this.selectionLayer.changed();
       });
     });
     //const select = new Select({
@@ -239,7 +266,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   };
 
   ngAfterViewInit(): void {
-
+    this.sideNavService.setMap(this);
 
     this.popupOverlay = new Overlay({
       element: this.popup.nativeElement,
