@@ -34,12 +34,12 @@ import {Overlay} from "ol";
 })
 export class MapComponent implements OnInit, AfterViewInit {
   @Input() map: Map;
-  wfs: VectorLayer<any>;
+  wfsLayerGadm: VectorLayer<any>;
   private popupOverlay: Overlay;
   @ViewChild('popup') popup: ElementRef;
-  vtl: VectorTile<any>;
-  selectionLayer: VectorTile<any>;
-  vtls: VectorTileSource<any>;
+  vectorTileLayerGadm: VectorTile<any>;
+  selectionLayerGadm: VectorTile<any>;
+  vectorTileSourceGadm: VectorTileSource<any>;
 
 
 
@@ -49,32 +49,35 @@ export class MapComponent implements OnInit, AfterViewInit {
     console.log("Layer chaged on map: " + layer);
     if (layer == "tiles") {
 
-      this.map.removeLayer(this.wfs);
+      this.map.removeLayer(this.wfsLayerGadm);
       //this.map.addLayer(this.selectionLayer);
       //this.map.addLayer(this.vtl);
 
-      this.vtl.setVisible(true);
-      this.selectionLayer.setVisible(true);
-      this.wfs.setVisible(false);
+      this.vectorTileLayerGadm.setVisible(true);
+      this.selectionLayerGadm.setVisible(true);
+      this.wfsLayerGadm.setVisible(false);
 
     } else {
       //this.map.removeLayer(this.vtl);
       //this.map.removeLayer(this.selectionLayer);
-      this.map.addLayer(this.wfs);
+      this.map.addLayer(this.wfsLayerGadm);
 
-      this.vtl.setVisible(false);
-      this.selectionLayer.setVisible(false);
-      this.wfs.setVisible(true);
+      this.vectorTileLayerGadm.setVisible(false);
+      this.selectionLayerGadm.setVisible(false);
+      this.wfsLayerGadm.setVisible(true);
     }
   }
   ngOnInit() {
+
     this.map.IMAGE_RELOAD_ATTEMPTS = 3;
     this.map.setTarget(this.elementRef.nativeElement);
     this.map.setView(new View({
       center: olProj.fromLonLat([12.4659589, 41.9101776]),//[146, -42]),
       zoom: 10
     }))
+
     this.map.getView().on('change:resolution', function() {
+      //TODO change layer level by actual map resolution
       //console.log("this.view.getResolution() = " + this.getResolution());
       //console.log("resolution" + resolution);
       /*
@@ -85,43 +88,13 @@ export class MapComponent implements OnInit, AfterViewInit {
       };
       */
     });
-    //Définition du layer WFS "WFS GL Data",
-    /*
-        let vectorLayer = new VectorSource({
-          format: new GML(),
-          url: function(extent) {
-            //return 'https://geodienste.hamburg.de/HH_WFS_Statistik_Stadtteile_Wahlergebnisse' +
-            //  '?version=1.1.0&service=WFS&request=GetFeature&' +
-            //  'typename=wahlergebnis_buew_afd_prz_15022015';
-            return 'https://www.euro-geo-opendata.eu/api/v2/maps/external/wfs/open-euroglobalmap-feature-service?' +
-              'SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0
-          },
-          strategy: bbox
-        });
-    */
+
     const vectorSource = new VectorSource({
       format: new GML3(),
       url: function (extent, resolution) {
-        //console.log("this.view.getResolution() = " + View..getResolution());
-        //console.log("resolution" + resolution);
+
         //if (resolution > 200) return undefined;
         return (
-          /*
-          'https://ahocevar.com/geoserver/wfs?service=WFS&' +
-          'version=1.1.0&request=GetFeature&typename=osm:water_areas&' +
-          'outputFormat=application/json&srsname=EPSG:3857&' +
-          'bbox=' +
-          extent.join(',') +
-          ',EPSG:3857'*/
-          //-----------------topp:tasmania_water_bodies
-          /*
-          'https://www.euro-geo-opendata.eu/api/v2/maps/external/wfs/euro-global-map?' +
-          'token=Im1hdXJpemlvX2Nlcm9saW5pIg.E-rmJA.kFrWtt8ojfZw6vn-8njIwRtDA8c' +
-          '&version=2.0.0&typeNames=EUROGLOBALMAP.ADMINISTRATIVE.BOUNDARIES:polbnda_optionks&srsName=EPSG:3857' +
-          '&bbox=' +
-          extent.join(',') +
-          '&service=WFS&request=GetFeature&outputFormat=gml3'
-           */
           'http://51.210.249.119:8080/geoserver/wfs?service=wfs&version=1.1.0&request=GetFeature&outputFormat=gml3' +
           '&bbox=' +
           extent.join(',') +
@@ -131,7 +104,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       strategy: bboxStrategy,
     });
 
-    this.vtls = new VectorTileSource({
+    this.vectorTileSourceGadm = new VectorTileSource({
       tilePixelRatio: 1, // oversampling when > 1
       tileGrid: createXYZ({maxZoom: 19}),
       format: new MVT({featureClass: Feature}),
@@ -139,7 +112,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         '/{z}/{x}/{-y}.pbf'
     })
 
-    this.vtl = new VectorTile({
+    this.vectorTileLayerGadm = new VectorTile({
 
       style: new Style({
         stroke: new Stroke({
@@ -151,10 +124,10 @@ export class MapComponent implements OnInit, AfterViewInit {
         }),
       }),
 
-      source: this.vtls
+      source: this.vectorTileSourceGadm
     });
 
-    this.wfs = new VectorLayer({
+    this.wfsLayerGadm = new VectorLayer({
       source: vectorSource,
       //name: 'gadm_1_1',
       maxResolution: 200,
@@ -169,45 +142,14 @@ export class MapComponent implements OnInit, AfterViewInit {
       })
     });
 
-    /*
-    this.wfs = new VectorLayer({
-      strategies: [new OpenLayers.Strategy.BBOX()],
-      protocol: new OpenLayers.Protocol.WFS({
-        version: "1.1.0",
-        srsName: "EPSG:4326",
-        url: data_url,
-        featurePrefix : 'ms',
-        featureType: "jcd_jcdecaux.jcdvelov",
-        geometryName: "msGeometry",
-        formatOptions: {
-          xy: false
-        }
-      }),
-      styleMap: new OpenLayers.StyleMap(style),
-      renderers: OpenLayers.Layer.Vector.prototype.renderers
-    });
-    -------------------------------
-    var wfs2 = new OpenLayers.Layer.Vector("WFS", {
-                    strategies: [new OpenLayers.Strategy.Fixed()],
-                    protocol: new OpenLayers.Protocol.WFS({
-                    version: "1.1.0",
-                    url: "http://localhost:8080/geoserver/wfs",
-                    featurePrefix: "topp",
-                    featureType: "states",
-                    featureNS: "www.openplans.org/topp",
-                    srsName: "EPSG:4326",
-                    geometryName: "position"
-                  })
-         });
-     */
-    this.map.addLayer(this.vtl);
-    // Selection
+    this.map.addLayer(this.vectorTileLayerGadm);
+
     let selection = {};
 
-    this.selectionLayer = new VectorTile({
+    this.selectionLayerGadm = new VectorTile({
       map: this.map,
       renderMode: 'vector',
-      source: this.vtl.getSource(),
+      source: this.vectorTileLayerGadm.getSource(),
       style: function (feature) {
         if (feature.getId() in selection) {
           return new Style({
@@ -225,10 +167,10 @@ export class MapComponent implements OnInit, AfterViewInit {
 
     this.map.on(['click'], (event) => {
 
-      this.vtl.getFeatures(event.pixel).then( (features) => {
+      this.vectorTileLayerGadm.getFeatures(event.pixel).then( (features) => {
         if (!features.length) {
           selection = {};
-          this.selectionLayer.changed();
+          this.selectionLayerGadm.changed();
           return;
         }
         const feature = features[0];
@@ -236,33 +178,17 @@ export class MapComponent implements OnInit, AfterViewInit {
           return;
         }
         const fid = feature.getId();
-        //console.log("event.shiftKeyOnly: " + event.condition.shiftKeyOnly());
+
         if (condition.shiftKeyOnly(event) !== true && condition.platformModifierKeyOnly(event) !== true) {
           selection = {};
         }
         // add selected feature to lookup
         selection[fid] = feature;
 
-        this.selectionLayer.changed();
+        this.selectionLayerGadm.changed();
       });
     });
-    //const select = new Select({
-    //  style: selectedStyleFunction
-    //});
 
-    //
-    //this.map.addLayer(this.wfs);
-
-    //this.map.addInteraction(new Select());
-/*
-    this.map.on('click', function (e) {
-      let pixel = this.getEventPixel(e.originalEvent);
-      this.forEachFeatureAtPixel(pixel, function (feature) {
-        console.log("id: " + feature.getId());
-        feature.set('state', 'selected', true);
-      });
-    });
-*/
   };
 
   ngAfterViewInit(): void {
@@ -280,11 +206,6 @@ export class MapComponent implements OnInit, AfterViewInit {
 
       this.map.forEachFeatureAtPixel(event.pixel,
          (feature, layer) => {
-        //if (feature != null)
-          //{
-            //console.log("move forEachFeatureAtPixel: node_id: " + feature.getId());
-            //console.log("move forEachFeatureAtPixel: node_prop: " + feature.getProperties()['NAME_3']);
-          //}
 
           features.push(feature);
 
@@ -305,9 +226,7 @@ export class MapComponent implements OnInit, AfterViewInit {
              valuesToShow.push(clusterFeature.getProperties());
             });
 
-            //console.log("valuesToShow: " + valuesToShow)
             if (valuesToShow.length == 1) {
-              //console.log("compseNames: " + typeof valuesToShow[0]['NAME_4']);
               this.popup.nativeElement.innerHTML = compseNames(valuesToShow[0]) ;
             }
             //FIXME!! add table gen for multiple features
@@ -329,6 +248,6 @@ export class MapComponent implements OnInit, AfterViewInit {
         this.popup.nativeElement.hidden = true;
       }
     });
-
+    this.map.updateSize();
   }
 }

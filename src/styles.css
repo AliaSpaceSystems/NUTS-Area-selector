@@ -1,4 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
+.ol-zoom {
+  top: .5em;
+  right: .5em;
+  left: unset !important;
+}
 
 body {
     font-family: 'Roboto';
@@ -12,3 +17,4 @@ body {
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+

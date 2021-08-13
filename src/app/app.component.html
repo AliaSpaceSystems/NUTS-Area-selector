@@ -10,12 +10,18 @@
   <app-topbar></app-topbar>
 </header>
 <main>
-  <div>
+  <div style="height: 100%; width: 100%">
+  <mat-drawer-container style="height: 100%; width: 100%" >
+
+
     <app-sidenav-left></app-sidenav-left>
+    <div class="map-container">
+      <app-map [map]="map"></app-map>
+    </div>
+  </mat-drawer-container>
+
   </div>
-  <div class="map-container">
-    <app-map [map]="map"></app-map>
-  </div>
+
 </main>
 <footer>
   <app-scaleline [map]="map"></app-scaleline>

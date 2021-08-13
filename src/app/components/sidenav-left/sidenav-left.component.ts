@@ -1,6 +1,6 @@
 import {Component, OnInit, AfterViewInit, ViewChild} from '@angular/core';
 import { SideNavService } from '../../services/side-nav.service';
-import {MatSidenav} from "@angular/material/sidenav";
+import {MatDrawer, MatSidenav} from "@angular/material/sidenav";
 
 @Component({
   selector: 'app-sidenav-left',
@@ -9,7 +9,8 @@ import {MatSidenav} from "@angular/material/sidenav";
 })
 
 export class SidenavLeftComponent implements AfterViewInit {
-  @ViewChild('sidenav') public sidenav: MatSidenav;
+  //@ViewChild('sidenav') public sidenav: MatSidenav;
+  @ViewChild('sidenav') public sidenav: MatDrawer;
   //@ViewChild('layer') public layer: string;
   constructor(private sideNavService: SideNavService) { }
 
