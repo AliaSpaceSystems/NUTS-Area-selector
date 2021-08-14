@@ -20,11 +20,7 @@ export class SelectedListComponent implements OnInit {
   removable = true;
   addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
-  zones: Zone[] = [
-    {name: 'Lemon'},
-    {name: 'Lime'},
-    {name: 'Apple'},
-  ];
+  zones: Zone[] = [];
 
   constructor(private sideNavService: SideNavService) {
   }

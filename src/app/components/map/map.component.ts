@@ -21,6 +21,98 @@ import MVT from "ol/format/MVT";
 import {Select} from "ol/interaction";
 import {Overlay} from "ol";
 
+class SelectableVectorTileLayer {
+  vectorTileLayer: VectorTile<any>;
+  selectionLayer: VectorTile<any>;
+  vectorTileSource: VectorTileSource<any>;
+  selection: {};
+
+  constructor(private map: Map, private url: string) {
+    this.selection = {};
+
+    this.vectorTileSource = new VectorTileSource({
+      tilePixelRatio: 1, // oversampling when > 1
+      tileGrid: createXYZ({maxZoom: 19}),
+      format: new MVT({featureClass: Feature}),
+      url: url +
+        '/{z}/{x}/{-y}.pbf'
+    })
+
+    this.vectorTileLayer = new VectorTile({
+
+      style: new Style({
+        stroke: new Stroke({
+          color: 'rgba(0, 255, 0, 1.0)',
+          width: 2
+        }),
+        fill: new Fill({
+          color: 'rgba(0, 0, 255, 0.1)',
+        }),
+      }),
+
+      source: this.vectorTileSource
+    });
+
+    this.selectionLayer = new VectorTile({
+      map: this.map,
+      renderMode: 'vector',
+      source: this.vectorTileLayer.getSource(),
+      style: (feature) => {
+        if (feature.getId() in this.selection) {
+          return new Style({
+            stroke: new Stroke({
+              color: 'rgba(200,20,20,0.8)',
+              width: 2,
+            }),
+            fill: new Fill({
+              color: 'rgba(200,20,20,0.4)',
+            }),
+          });
+        }
+      },
+    });
+    this.map.addLayer(this.vectorTileLayer);
+    this.hide();
+  }
+
+  clearSelection(){
+    this.selection = {};
+    this.selectionLayer.changed();
+  }
+
+  selectEvent(event) {
+    this.vectorTileLayer.getFeatures(event.pixel).then((features) => {
+      if (!features.length) {
+        this.selection = {};
+        this.selectionLayer.changed();
+        return;
+      }
+      const feature = features[0];
+      if (!feature) {
+        return;
+      }
+      const fid = feature.getId();
+
+      if (condition.shiftKeyOnly(event) !== true && condition.platformModifierKeyOnly(event) !== true) {
+        this.selection = {};
+      }
+      // add selected feature to lookup
+      this.selection[fid] = feature;
+
+      this.selectionLayer.changed();
+    });
+  }
+
+  hide(){
+    this.vectorTileLayer.setVisible(false);
+    this.selectionLayer.setVisible(false);
+  }
+
+  show(){
+    this.vectorTileLayer.setVisible(true);
+    this.selectionLayer.setVisible(true);
+  }
+}
 
 @Component({
   selector: 'app-map',
@@ -41,38 +133,54 @@ export class MapComponent implements OnInit, AfterViewInit {
   selectionLayerGadm: VectorTile<any>;
   vectorTileSourceGadm: VectorTileSource<any>;
 
+  vectorLayers: {};
+
+  selectedLayer: string;
+
 
 
   constructor(private elementRef: ElementRef, private sideNavService: SideNavService) {
   }
   setLayer(layer: string) {
     console.log("Layer chaged on map: " + layer);
-    if (layer == "tiles") {
-
-      this.map.removeLayer(this.wfsLayerGadm);
-      //this.map.addLayer(this.selectionLayer);
-      //this.map.addLayer(this.vtl);
-
-      this.vectorTileLayerGadm.setVisible(true);
-      this.selectionLayerGadm.setVisible(true);
-      this.wfsLayerGadm.setVisible(false);
-
-    } else {
-      //this.map.removeLayer(this.vtl);
-      //this.map.removeLayer(this.selectionLayer);
-      this.map.addLayer(this.wfsLayerGadm);
-
-      this.vectorTileLayerGadm.setVisible(false);
-      this.selectionLayerGadm.setVisible(false);
-      this.wfsLayerGadm.setVisible(true);
-    }
+    this.vectorLayers[this.selectedLayer].hide();
+    this.vectorLayers[this.selectedLayer].clearSelection();
+    this.selectedLayer = layer;
+    this.vectorLayers[this.selectedLayer].show();
   }
 
-  selection: {};
 
   ngOnInit() {
 
-    this.selection = {};
+    this.vectorLayers = {};
+    this.selectedLayer = 'gadm_all';
+
+    this.vectorLayers['gadm_all'] = new SelectableVectorTileLayer(this.map,
+      'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm@EPSG%3A3857@pbf');
+    this.vectorLayers['gadm_0'] = new SelectableVectorTileLayer(this.map,
+      'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm36_0@EPSG%3A3857@pbf');
+    this.vectorLayers['gadm_1'] = new SelectableVectorTileLayer(this.map,
+      'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm36_1@EPSG%3A3857@pbf');
+    this.vectorLayers['gadm_2'] = new SelectableVectorTileLayer(this.map,
+      'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm36_2@EPSG%3A3857@pbf');
+    this.vectorLayers['gadm_3'] = new SelectableVectorTileLayer(this.map,
+      'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm36_3@EPSG%3A3857@pbf');
+    this.vectorLayers['gadm_4'] = new SelectableVectorTileLayer(this.map,
+      'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm36_4@EPSG%3A3857@pbf');
+    this.vectorLayers['gadm_5'] = new SelectableVectorTileLayer(this.map,
+      'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm36_5@EPSG%3A3857@pbf');
+    this.vectorLayers['nuts_rg'] = new SelectableVectorTileLayer(this.map,
+      'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/nuts%3ANUTS_RG_01M_2021_3857@EPSG%3A3857@pbf');
+    this.vectorLayers['nuts_0'] = new SelectableVectorTileLayer(this.map,
+      'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/nuts%3ANUTS_RG_01M_2021_3857_LEVL_0@EPSG%3A3857@pbf');
+    this.vectorLayers['nuts_1'] = new SelectableVectorTileLayer(this.map,
+      'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/nuts%3ANUTS_RG_01M_2021_3857_LEVL_1@EPSG%3A3857@pbf');
+    this.vectorLayers['nuts_2'] = new SelectableVectorTileLayer(this.map,
+      'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/nuts%3ANUTS_RG_01M_2021_3857_LEVL_2@EPSG%3A3857@pbf');
+    this.vectorLayers['nuts_3'] = new SelectableVectorTileLayer(this.map,
+      'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/nuts%3ANUTS_RG_01M_2021_3857_LEVL_3@EPSG%3A3857@pbf');
+
+    this.vectorLayers[this.selectedLayer].show();
 
     this.map.IMAGE_RELOAD_ATTEMPTS = 3;
     this.map.setTarget(this.elementRef.nativeElement);
@@ -109,29 +217,6 @@ export class MapComponent implements OnInit, AfterViewInit {
       strategy: bboxStrategy,
     });
 
-    this.vectorTileSourceGadm = new VectorTileSource({
-      tilePixelRatio: 1, // oversampling when > 1
-      tileGrid: createXYZ({maxZoom: 19}),
-      format: new MVT({featureClass: Feature}),
-      url: 'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm@EPSG%3A3857@pbf' +
-        '/{z}/{x}/{-y}.pbf'
-    })
-
-    this.vectorTileLayerGadm = new VectorTile({
-
-      style: new Style({
-        stroke: new Stroke({
-          color: 'rgba(0, 255, 0, 1.0)',
-          width: 2
-        }),
-        fill: new Fill({
-          color: 'rgba(0, 0, 255, 0.1)',
-        }),
-      }),
-
-      source: this.vectorTileSourceGadm
-    });
-
     this.wfsLayerGadm = new VectorLayer({
       source: vectorSource,
       //name: 'gadm_1_1',
@@ -147,67 +232,32 @@ export class MapComponent implements OnInit, AfterViewInit {
       })
     });
 
-    this.map.addLayer(this.vectorTileLayerGadm);
-
-    //let selection = {};
-
-    this.selectionLayerGadm = new VectorTile({
-      map: this.map,
-      renderMode: 'vector',
-      source: this.vectorTileLayerGadm.getSource(),
-      style: (feature) => {
-        if (feature.getId() in this.selection) {
-          return new Style({
-            stroke: new Stroke({
-              color: 'rgba(200,20,20,0.8)',
-              width: 2,
-            }),
-            fill: new Fill({
-              color: 'rgba(200,20,20,0.4)',
-            }),
-          });
-        }
-      },
-    });
 
     this.map.on(['click'], (event) => {
 
-      this.vectorTileLayerGadm.getFeatures(event.pixel).then( (features) => {
-        if (!features.length) {
-          this.selection = {};
-          this.selectionLayerGadm.changed();
-          return;
-        }
-        const feature = features[0];
-        if (!feature) {
-          return;
-        }
-        const fid = feature.getId();
+      this.vectorLayers[this.selectedLayer].selectEvent(event);
 
-        if (condition.shiftKeyOnly(event) !== true && condition.platformModifierKeyOnly(event) !== true) {
-          this.selection = {};
-        }
-        // add selected feature to lookup
-        this.selection[fid] = feature;
-
-        this.selectionLayerGadm.changed();
-      });
     });
 
   };
 
   getSelected() {
-    console.log("features: " + Object.keys(this.selection).length);
-    return this.selection;
+    console.log("features: " + Object.keys(this.vectorLayers[this.selectedLayer].selection).length);
+    return this.vectorLayers[this.selectedLayer].selection;
   }
 
   compseNames(val) {
     let res = ""
-    if (typeof val['NAME_1'] == "string") res += val['NAME_1']; else return "";
-    if (typeof val['NAME_2'] == "string") res += '<br>' + val['NAME_2']; else return res;
-    if (typeof val['NAME_3'] == "string") res += '<br>' + val['NAME_3']; else return res;
-    if (typeof val['NAME_4'] == "string") res += '<br>' + val['NAME_4']; else return res;
-    if (typeof val['NAME_5'] == "string") res += '<br>' + val['NAME_5']; else return res;
+    if (this.selectedLayer.includes('gadm')) {
+      if (typeof val['NAME_0'] == "string") res += 'L0: ' + val['NAME_0']; else return "";
+      if (typeof val['NAME_1'] == "string") res += '<br>' + 'L1: ' + val['NAME_1']; else return res;
+      if (typeof val['NAME_2'] == "string") res += '<br>' + 'L2: ' + val['NAME_2']; else return res;
+      if (typeof val['NAME_3'] == "string") res += '<br>' + 'L3: ' + val['NAME_3']; else return res;
+      if (typeof val['NAME_4'] == "string") res += '<br>' + 'L4: ' + val['NAME_4']; else return res;
+      if (typeof val['NAME_5'] == "string") res += '<br>' + 'L5: ' + val['NAME_5']; else return res;
+    } else if (this.selectedLayer.includes('nuts')) {
+      res = 'ID: ' + val['NUTS_ID'] + '<br>' + 'Name: ' + val['NUTS_NAME'];
+    }
     return res;
   }
 

@@ -4,12 +4,33 @@
     </div>
     <div>
     <mat-form-field appearance="fill">
-      <mat-label>Layer mode</mat-label>
+      <mat-label>Layer data</mat-label>
+      <mat-select #layerDataset value="tiles">
+        <mat-option value="gadm">GADM</mat-option>
+        <mat-option value="nuts">NUTS</mat-option>
+      </mat-select>
+      <mat-divider></mat-divider>
+
+    </mat-form-field>
+      <div>
+      <mat-form-field appearance="fill">
+        <mat-label>Layer level</mat-label>
       <mat-select #layer (selectionChange)="layerChanged($event.value)" value="tiles">
-        <mat-option value="tiles">Vector Tiles</mat-option>
-        <mat-option value="wfs">Vector WFS</mat-option>
+        <mat-option *ngIf="layerDataset.value == 'gadm'" value="gadm_all">GADM all Levels</mat-option>
+        <mat-option *ngIf="layerDataset.value == 'gadm'" value="gadm_0">GADM Level 0</mat-option>
+        <mat-option *ngIf="layerDataset.value == 'gadm'" value="gadm_1">GADM Level 1</mat-option>
+        <mat-option *ngIf="layerDataset.value == 'gadm'" value="gadm_2">GADM Level 2</mat-option>
+        <mat-option *ngIf="layerDataset.value == 'gadm'" value="gadm_3">GADM Level 3</mat-option>
+        <mat-option *ngIf="layerDataset.value == 'gadm'" value="gadm_4">GADM Level 4</mat-option>
+        <mat-option *ngIf="layerDataset.value == 'gadm'" value="gadm_5">GADM Level 5</mat-option>
+        <mat-option *ngIf="layerDataset.value == 'nuts'" value="nuts_rg">NUTS all Levels</mat-option>
+        <mat-option *ngIf="layerDataset.value == 'nuts'" value="nuts_0">NUTS Level 0</mat-option>
+        <mat-option *ngIf="layerDataset.value == 'nuts'" value="nuts_1">NUTS Level 1</mat-option>
+        <mat-option *ngIf="layerDataset.value == 'nuts'" value="nuts_2">NUTS Level 2</mat-option>
+        <mat-option *ngIf="layerDataset.value == 'nuts'" value="nuts_3">NUTS Level 3</mat-option>
       </mat-select>
     </mat-form-field>
+      </div>
     </div>
   </mat-drawer>
 

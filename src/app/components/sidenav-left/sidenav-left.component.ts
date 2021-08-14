@@ -12,7 +12,13 @@ export class SidenavLeftComponent implements AfterViewInit {
   //@ViewChild('sidenav') public sidenav: MatSidenav;
   @ViewChild('sidenav') public sidenav: MatDrawer;
   //@ViewChild('layer') public layer: string;
-  constructor(private sideNavService: SideNavService) { }
+  sds: SideNavService;
+
+  constructor(private sideNavService: SideNavService) {
+    this.sds = sideNavService;
+  }
+
+
 
   ngAfterViewInit() {
     this.sideNavService.setSidenav(this.sidenav);

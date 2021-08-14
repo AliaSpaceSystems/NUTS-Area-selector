@@ -19,6 +19,7 @@ import { TopbarComponent } from './components/topbar/topbar.component';
 import {SideNavService} from './services/side-nav.service';
 import { SelectedListComponent } from './components/selected-list/selected-list.component';
 import { MatChipsModule } from '@angular/material/chips';
+import {MatDividerModule} from '@angular/material/divider';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { MatChipsModule } from '@angular/material/chips';
     MatButtonModule,
     MatToolbarModule,
     MatIconModule,
-    MatChipsModule
+    MatChipsModule,
+    MatDividerModule
   ],
   providers: [DecimalPipe, SideNavService],
   bootstrap: [AppComponent]
