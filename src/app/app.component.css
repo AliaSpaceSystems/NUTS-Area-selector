@@ -29,6 +29,8 @@ footer {
     padding: 1em;
     justify-content: space-between;
 }
-
+header {
+  min-height: 30px;
+}
 
 

@@ -1,6 +1,11 @@
 <mat-toolbar color="primary" role="heading">
+  <div style="vertical-align: middle;" >
   <button mat-icon-button (click)="clickMenu()">
     <mat-icon>menu</mat-icon>
   </button>
-  <button mat-button>{{ title }}</button>
+  <button mat-button style="font-size: 14pt;">{{ title }}</button>
+  </div>
+  <div style="width: 100%;">
+    <app-selected-list></app-selected-list>
+  </div>
 </mat-toolbar>

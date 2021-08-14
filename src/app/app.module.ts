@@ -16,7 +16,9 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatIconModule} from '@angular/material/icon';
 import { TopbarComponent } from './components/topbar/topbar.component';
-import {SideNavService} from './services/side-nav.service'
+import {SideNavService} from './services/side-nav.service';
+import { SelectedListComponent } from './components/selected-list/selected-list.component';
+import { MatChipsModule } from '@angular/material/chips';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,8 @@ import {SideNavService} from './services/side-nav.service'
     MousePositionComponent,
     LayerSelectorComponent,
     SidenavLeftComponent,
-    TopbarComponent
+    TopbarComponent,
+    SelectedListComponent
   ],
   imports: [
     BrowserModule,
@@ -36,7 +39,8 @@ import {SideNavService} from './services/side-nav.service'
     MatSelectModule,
     MatButtonModule,
     MatToolbarModule,
-    MatIconModule
+    MatIconModule,
+    MatChipsModule
   ],
   providers: [DecimalPipe, SideNavService],
   bootstrap: [AppComponent]

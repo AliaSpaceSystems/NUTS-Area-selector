@@ -23,8 +23,12 @@ export class SidenavLeftComponent implements AfterViewInit {
     });*/
   }
 
+  addAreas(){
+    this.sideNavService.addAreas();
+  }
+
   layerChanged(val) {
-    console.log("Layer chaged: " + val);
+    //console.log("Layer chaged: " + val);
     this.sideNavService.setLayer(val);
   }
 

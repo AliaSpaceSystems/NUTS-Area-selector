@@ -67,7 +67,12 @@ export class MapComponent implements OnInit, AfterViewInit {
       this.wfsLayerGadm.setVisible(true);
     }
   }
+
+  selection: {};
+
   ngOnInit() {
+
+    this.selection = {};
 
     this.map.IMAGE_RELOAD_ATTEMPTS = 3;
     this.map.setTarget(this.elementRef.nativeElement);
@@ -144,14 +149,14 @@ export class MapComponent implements OnInit, AfterViewInit {
 
     this.map.addLayer(this.vectorTileLayerGadm);
 
-    let selection = {};
+    //let selection = {};
 
     this.selectionLayerGadm = new VectorTile({
       map: this.map,
       renderMode: 'vector',
       source: this.vectorTileLayerGadm.getSource(),
-      style: function (feature) {
-        if (feature.getId() in selection) {
+      style: (feature) => {
+        if (feature.getId() in this.selection) {
           return new Style({
             stroke: new Stroke({
               color: 'rgba(200,20,20,0.8)',
@@ -169,7 +174,7 @@ export class MapComponent implements OnInit, AfterViewInit {
 
       this.vectorTileLayerGadm.getFeatures(event.pixel).then( (features) => {
         if (!features.length) {
-          selection = {};
+          this.selection = {};
           this.selectionLayerGadm.changed();
           return;
         }
@@ -180,16 +185,31 @@ export class MapComponent implements OnInit, AfterViewInit {
         const fid = feature.getId();
 
         if (condition.shiftKeyOnly(event) !== true && condition.platformModifierKeyOnly(event) !== true) {
-          selection = {};
+          this.selection = {};
         }
         // add selected feature to lookup
-        selection[fid] = feature;
+        this.selection[fid] = feature;
 
         this.selectionLayerGadm.changed();
       });
     });
 
   };
+
+  getSelected() {
+    console.log("features: " + Object.keys(this.selection).length);
+    return this.selection;
+  }
+
+  compseNames(val) {
+    let res = ""
+    if (typeof val['NAME_1'] == "string") res += val['NAME_1']; else return "";
+    if (typeof val['NAME_2'] == "string") res += '<br>' + val['NAME_2']; else return res;
+    if (typeof val['NAME_3'] == "string") res += '<br>' + val['NAME_3']; else return res;
+    if (typeof val['NAME_4'] == "string") res += '<br>' + val['NAME_4']; else return res;
+    if (typeof val['NAME_5'] == "string") res += '<br>' + val['NAME_5']; else return res;
+    return res;
+  }
 
   ngAfterViewInit(): void {
     this.sideNavService.setMap(this);
@@ -209,15 +229,7 @@ export class MapComponent implements OnInit, AfterViewInit {
 
           features.push(feature);
 
-          function compseNames(val) {
-            let res = ""
-            if (typeof val['NAME_1'] == "string") res += val['NAME_1']; else return "";
-            if (typeof val['NAME_2'] == "string") res += '<br>' + val['NAME_2']; else return res;
-            if (typeof val['NAME_3'] == "string") res += '<br>' + val['NAME_3']; else return res;
-            if (typeof val['NAME_4'] == "string") res += '<br>' + val['NAME_4']; else return res;
-            if (typeof val['NAME_5'] == "string") res += '<br>' + val['NAME_5']; else return res;
-            return res;
-          }
+
 
 
           const valuesToShow = [];
@@ -227,7 +239,7 @@ export class MapComponent implements OnInit, AfterViewInit {
             });
 
             if (valuesToShow.length == 1) {
-              this.popup.nativeElement.innerHTML = compseNames(valuesToShow[0]) ;
+              this.popup.nativeElement.innerHTML = this.compseNames(valuesToShow[0]) ;
             }
             //FIXME!! add table gen for multiple features
 
