@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LayerSelectorComponent } from './layer-selector.component';
+import { MatSpinnerOverlayComponent } from './mat-spinner-overlay.component';
 
-describe('LayerSelectorComponent', () => {
-  let component: LayerSelectorComponent;
-  let fixture: ComponentFixture<LayerSelectorComponent>;
+describe('MatSpinnerOverlayComponent', () => {
+  let component: MatSpinnerOverlayComponent;
+  let fixture: ComponentFixture<MatSpinnerOverlayComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LayerSelectorComponent ]
+      declarations: [ MatSpinnerOverlayComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LayerSelectorComponent);
+    fixture = TestBed.createComponent(MatSpinnerOverlayComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

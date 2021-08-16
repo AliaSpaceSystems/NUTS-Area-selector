@@ -50,6 +50,10 @@ export class SideNavService {
     this.map = map;
   }
 
+  public doSpin(doSpin: boolean) {
+    this.map.doSpin = doSpin;
+  }
+
   public setLayer(layer: string) {
     this.map.setLayer(layer);
   }

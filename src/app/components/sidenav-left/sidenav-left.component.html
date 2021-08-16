@@ -1,11 +1,11 @@
   <mat-drawer #sidenav mode="side" >
     <div>
-      <button mat-button (click)="addAreas()">Add areas to list</button>
+      <button mat-button color="primary" (click)="addAreas()">Add areas to list</button>
     </div>
     <div>
     <mat-form-field appearance="fill">
       <mat-label>Layer data</mat-label>
-      <mat-select #layerDataset value="tiles">
+      <mat-select #layerDataset value="gadm">
         <mat-option value="gadm">GADM</mat-option>
         <mat-option value="nuts">NUTS</mat-option>
       </mat-select>
@@ -15,7 +15,7 @@
       <div>
       <mat-form-field appearance="fill">
         <mat-label>Layer level</mat-label>
-      <mat-select #layer (selectionChange)="layerChanged($event.value)" value="tiles">
+      <mat-select #layer (selectionChange)="layerChanged($event.value)" value="gadm_all">
         <mat-option *ngIf="layerDataset.value == 'gadm'" value="gadm_all">GADM all Levels</mat-option>
         <mat-option *ngIf="layerDataset.value == 'gadm'" value="gadm_0">GADM Level 0</mat-option>
         <mat-option *ngIf="layerDataset.value == 'gadm'" value="gadm_1">GADM Level 1</mat-option>

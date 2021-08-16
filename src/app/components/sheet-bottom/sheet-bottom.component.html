@@ -1,0 +1,32 @@
+<h1>Select elaboration:</h1>
+<div>
+  <mat-form-field appearance="fill">
+    <mat-label>Mode</mat-label>
+    <mat-select #elabMode value="single">
+      <mat-option value="single">Single area</mat-option>
+      <mat-option value="multi">Multiple areas</mat-option>
+    </mat-select>
+    <mat-divider></mat-divider>
+  </mat-form-field>
+  <div>
+    <mat-form-field appearance="fill">
+      <mat-label>Data source</mat-label>
+      <mat-select #elabSource value="dsm_africa">
+        <mat-option value="dsm_africa">DSM Africa</mat-option>
+        <mat-option value="s2_2020">Sentine 2 2020</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div>
+    <button mat-button color="primary" (click)="doEstimation()">Estimate</button>
+  </div>
+  <ng-container *ngIf="doSpin">
+    <app-mat-spinner-overlay diameter="50">
+    </app-mat-spinner-overlay>
+  </ng-container>
+  <ng-container *ngIf="noReply">
+    <div>
+     <p>No reply from server!</p>
+    </div>
+  </ng-container>
+</div>

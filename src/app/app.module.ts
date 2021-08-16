@@ -6,7 +6,6 @@ import { AppComponent } from './app.component';
 import { MapComponent } from './components/map/map.component';
 import { ScalelineComponent } from './components/scaleline/scaleline.component';
 import { MousePositionComponent } from './components/mouse-position/mouse-position.component';
-import { LayerSelectorComponent } from './components/layer-selector/layer-selector.component';
 import { SidenavLeftComponent } from './components/sidenav-left/sidenav-left.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatSidenavModule} from "@angular/material/sidenav";
@@ -19,7 +18,11 @@ import { TopbarComponent } from './components/topbar/topbar.component';
 import {SideNavService} from './services/side-nav.service';
 import { SelectedListComponent } from './components/selected-list/selected-list.component';
 import { MatChipsModule } from '@angular/material/chips';
-import {MatDividerModule} from '@angular/material/divider';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { SheetBottomComponent } from './components/sheet-bottom/sheet-bottom.component';
+import { MatSpinnerOverlayComponent } from './components/mat-spinner-overlay/mat-spinner-overlay.component';
 
 @NgModule({
   declarations: [
@@ -27,10 +30,11 @@ import {MatDividerModule} from '@angular/material/divider';
     MapComponent,
     ScalelineComponent,
     MousePositionComponent,
-    LayerSelectorComponent,
     SidenavLeftComponent,
     TopbarComponent,
-    SelectedListComponent
+    SelectedListComponent,
+    SheetBottomComponent,
+    MatSpinnerOverlayComponent
   ],
   imports: [
     BrowserModule,
@@ -42,7 +46,9 @@ import {MatDividerModule} from '@angular/material/divider';
     MatToolbarModule,
     MatIconModule,
     MatChipsModule,
-    MatDividerModule
+    MatDividerModule,
+    MatProgressSpinnerModule,
+    MatBottomSheetModule
   ],
   providers: [DecimalPipe, SideNavService],
   bootstrap: [AppComponent]

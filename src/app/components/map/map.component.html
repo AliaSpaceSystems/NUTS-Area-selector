@@ -1,2 +1,6 @@
 <div id="map"></div>
 <div #popup class="popup" [hidden]="true"></div>
+<ng-container *ngIf="doSpin">
+  <app-mat-spinner-overlay overlay="true">
+  </app-mat-spinner-overlay>
+</ng-container>

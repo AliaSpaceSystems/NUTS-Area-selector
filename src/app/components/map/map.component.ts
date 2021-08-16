@@ -126,12 +126,11 @@ class SelectableVectorTileLayer {
 })
 export class MapComponent implements OnInit, AfterViewInit {
   @Input() map: Map;
-  wfsLayerGadm: VectorLayer<any>;
+  //wfsLayerGadm: VectorLayer<any>;
   private popupOverlay: Overlay;
   @ViewChild('popup') popup: ElementRef;
-  vectorTileLayerGadm: VectorTile<any>;
-  selectionLayerGadm: VectorTile<any>;
-  vectorTileSourceGadm: VectorTileSource<any>;
+  //selectionLayerGadm: VectorTile<any>;
+  doSpin: boolean = false;
 
   vectorLayers: {};
 
@@ -201,7 +200,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       };
       */
     });
-
+/*
     const vectorSource = new VectorSource({
       format: new GML3(),
       url: function (extent, resolution) {
@@ -232,7 +231,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       })
     });
 
-
+*/
     this.map.on(['click'], (event) => {
 
       this.vectorLayers[this.selectedLayer].selectEvent(event);
