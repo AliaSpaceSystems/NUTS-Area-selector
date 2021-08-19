@@ -23,6 +23,7 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SheetBottomComponent } from './components/sheet-bottom/sheet-bottom.component';
 import { MatSpinnerOverlayComponent } from './components/mat-spinner-overlay/mat-spinner-overlay.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { MatSpinnerOverlayComponent } from './components/mat-spinner-overlay/mat
     MatChipsModule,
     MatDividerModule,
     MatProgressSpinnerModule,
-    MatBottomSheetModule
+    MatBottomSheetModule,
+    HttpClientModule
   ],
   providers: [DecimalPipe, SideNavService],
   bootstrap: [AppComponent]
