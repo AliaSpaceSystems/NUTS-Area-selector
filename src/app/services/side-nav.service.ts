@@ -13,7 +13,7 @@ export class SideNavService {
   private selzones: SelectedListComponent;
 
   constructor() { }
-
+/*
   public addAreas(){
     let features = this.map.getSelected();
     for (let key in features) {
@@ -37,6 +37,7 @@ export class SideNavService {
       }
     }
   }
+*/
 
   public setSelectedZones(selzones: SelectedListComponent) {
     this.selzones = selzones;
@@ -54,7 +55,7 @@ export class SideNavService {
     this.map.doSpin = doSpin;
   }
 
-  public setLayer(layer: string) {
+  public setLayer(layer: number) {
     this.map.setLayer(layer);
   }
   public toggle() {

@@ -20,6 +20,7 @@ import GML3 from "ol/format/GML3";
 import MVT from "ol/format/MVT";
 import {Select} from "ol/interaction";
 import {Overlay} from "ol";
+import {layerArray, MapService} from "../../services/map.service";
 
 class SelectableVectorTileLayer {
   vectorTileLayer: VectorTile<any>;
@@ -27,8 +28,12 @@ class SelectableVectorTileLayer {
   vectorTileSource: VectorTileSource<any>;
   selection: {};
 
-  constructor(private map: Map, private url: string) {
-    this.selection = {};
+  constructor(private map: Map, private layerName: string, private globalSelection: {}, private url: string, private composeTipCB: (val: object) => string) {
+    //globalSelection[layerName] = {};
+    //this.selection = globalSelection[layerName];
+
+    this.selection = globalSelection
+
 
     this.vectorTileSource = new VectorTileSource({
       tilePixelRatio: 1, // oversampling when > 1
@@ -58,7 +63,7 @@ class SelectableVectorTileLayer {
       renderMode: 'vector',
       source: this.vectorTileLayer.getSource(),
       style: (feature) => {
-        if (feature.getId() in this.selection) {
+        if (this.layerName + '-' + feature.getId() in this.selection) {
           return new Style({
             stroke: new Stroke({
               color: 'rgba(200,20,20,0.8)',
@@ -80,26 +85,41 @@ class SelectableVectorTileLayer {
     this.selectionLayer.changed();
   }
 
+  composeTip(val) {
+    return this.composeTipCB(val);
+  }
+
   selectEvent(event) {
     this.vectorTileLayer.getFeatures(event.pixel).then((features) => {
+      /*
       if (!features.length) {
         this.selection = {};
         this.selectionLayer.changed();
         return;
       }
+      */
       const feature = features[0];
       if (!feature) {
         return;
       }
+
       const fid = feature.getId();
 
-      if (condition.shiftKeyOnly(event) !== true && condition.platformModifierKeyOnly(event) !== true) {
-        this.selection = {};
-      }
-      // add selected feature to lookup
-      this.selection[fid] = feature;
+      if (this.layerName + '-' + fid in this.selection) {
+        console.log("fid to be removed: " + fid);
+        delete this.selection[this.layerName + '-' + fid];
+        this.selectionLayer.changed();
+      } else {
 
-      this.selectionLayer.changed();
+        //if (condition.shiftKeyOnly(event) !== true && condition.platformModifierKeyOnly(event) !== true) {
+        //  this.selection = {};
+        //}
+        // add selected feature to lookup
+        this.selection[this.layerName + '-' + fid] = feature;
+
+        this.selectionLayer.changed();
+      }
+
     });
   }
 
@@ -134,16 +154,17 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   vectorLayers: {};
 
-  selectedLayer: string;
+  selectedLayer: number;
+  globalSelection: {};
 
 
 
-  constructor(private elementRef: ElementRef, private sideNavService: SideNavService) {
+  constructor(private elementRef: ElementRef, private sideNavService: SideNavService, private mapService: MapService) {
   }
-  setLayer(layer: string) {
+  setLayer(layer: number) {
     console.log("Layer chaged on map: " + layer);
     this.vectorLayers[this.selectedLayer].hide();
-    this.vectorLayers[this.selectedLayer].clearSelection();
+    //this.vectorLayers[this.selectedLayer].clearSelection();
     this.selectedLayer = layer;
     this.vectorLayers[this.selectedLayer].show();
   }
@@ -152,32 +173,46 @@ export class MapComponent implements OnInit, AfterViewInit {
   ngOnInit() {
 
     this.vectorLayers = {};
-    this.selectedLayer = 'gadm_all';
-
-    this.vectorLayers['gadm_all'] = new SelectableVectorTileLayer(this.map,
+    this.mapService.featureSelection = {};
+    this.globalSelection = this.mapService.featureSelection;
+    this.selectedLayer = 0;
+/*
+    this.vectorLayers['gadm_all'] = new SelectableVectorTileLayer(this.map, 'gadm_all', this.globalSelection,
       'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm@EPSG%3A3857@pbf');
-    this.vectorLayers['gadm_0'] = new SelectableVectorTileLayer(this.map,
+    this.vectorLayers['gadm_0'] = new SelectableVectorTileLayer(this.map,'gadm_0', this.globalSelection,
       'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm36_0@EPSG%3A3857@pbf');
-    this.vectorLayers['gadm_1'] = new SelectableVectorTileLayer(this.map,
+    this.vectorLayers['gadm_1'] = new SelectableVectorTileLayer(this.map,'gadm_1', this.globalSelection,
       'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm36_1@EPSG%3A3857@pbf');
-    this.vectorLayers['gadm_2'] = new SelectableVectorTileLayer(this.map,
+    this.vectorLayers['gadm_2'] = new SelectableVectorTileLayer(this.map,'gadm_2', this.globalSelection,
       'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm36_2@EPSG%3A3857@pbf');
-    this.vectorLayers['gadm_3'] = new SelectableVectorTileLayer(this.map,
+    this.vectorLayers['gadm_3'] = new SelectableVectorTileLayer(this.map,'gadm_3', this.globalSelection,
       'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm36_3@EPSG%3A3857@pbf');
-    this.vectorLayers['gadm_4'] = new SelectableVectorTileLayer(this.map,
+    this.vectorLayers['gadm_4'] = new SelectableVectorTileLayer(this.map,'gadm_4', this.globalSelection,
       'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm36_4@EPSG%3A3857@pbf');
-    this.vectorLayers['gadm_5'] = new SelectableVectorTileLayer(this.map,
+    this.vectorLayers['gadm_5'] = new SelectableVectorTileLayer(this.map,'gadm_5', this.globalSelection,
       'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm36_5@EPSG%3A3857@pbf');
-    this.vectorLayers['nuts_rg'] = new SelectableVectorTileLayer(this.map,
+    this.vectorLayers['nuts_rg'] = new SelectableVectorTileLayer(this.map,'nuts_rg', this.globalSelection,
       'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/nuts%3ANUTS_RG_01M_2021_3857@EPSG%3A3857@pbf');
-    this.vectorLayers['nuts_0'] = new SelectableVectorTileLayer(this.map,
+    this.vectorLayers['nuts_0'] = new SelectableVectorTileLayer(this.map,'nuts_0', this.globalSelection,
       'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/nuts%3ANUTS_RG_01M_2021_3857_LEVL_0@EPSG%3A3857@pbf');
-    this.vectorLayers['nuts_1'] = new SelectableVectorTileLayer(this.map,
+    this.vectorLayers['nuts_1'] = new SelectableVectorTileLayer(this.map,'nuts_1', this.globalSelection,
       'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/nuts%3ANUTS_RG_01M_2021_3857_LEVL_1@EPSG%3A3857@pbf');
-    this.vectorLayers['nuts_2'] = new SelectableVectorTileLayer(this.map,
+    this.vectorLayers['nuts_2'] = new SelectableVectorTileLayer(this.map,'nuts_2', this.globalSelection,
       'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/nuts%3ANUTS_RG_01M_2021_3857_LEVL_2@EPSG%3A3857@pbf');
-    this.vectorLayers['nuts_3'] = new SelectableVectorTileLayer(this.map,
+    this.vectorLayers['nuts_3'] = new SelectableVectorTileLayer(this.map,'nuts_3', this.globalSelection,
       'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/nuts%3ANUTS_RG_01M_2021_3857_LEVL_3@EPSG%3A3857@pbf');
+*/
+
+    layerArray.forEach( (layer,index) => {
+      this.vectorLayers[index] = new SelectableVectorTileLayer(this.map, index.toString(),
+        this.globalSelection, layer.url, layer.composeTipCB);
+      }
+    )
+    /*
+    for (let layer in layerArray){
+      console.log("Layer Group:" + layerArray[layer].group);
+      console.log("Layer Level:" + layerArray[layer].level);
+    }*/
 
     this.vectorLayers[this.selectedLayer].show();
 
@@ -246,18 +281,20 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   compseNames(val) {
+    return this.vectorLayers[this.selectedLayer].composeTip(val);
+    /*
     let res = ""
-    if (this.selectedLayer.includes('gadm')) {
+    if (layerArray[this.selectedLayer].group == 'GADM') {
       if (typeof val['NAME_0'] == "string") res += 'L0: ' + val['NAME_0']; else return "";
       if (typeof val['NAME_1'] == "string") res += '<br>' + 'L1: ' + val['NAME_1']; else return res;
       if (typeof val['NAME_2'] == "string") res += '<br>' + 'L2: ' + val['NAME_2']; else return res;
       if (typeof val['NAME_3'] == "string") res += '<br>' + 'L3: ' + val['NAME_3']; else return res;
       if (typeof val['NAME_4'] == "string") res += '<br>' + 'L4: ' + val['NAME_4']; else return res;
       if (typeof val['NAME_5'] == "string") res += '<br>' + 'L5: ' + val['NAME_5']; else return res;
-    } else if (this.selectedLayer.includes('nuts')) {
+    } else if (layerArray[this.selectedLayer].group == 'NUTS') {
       res = 'ID: ' + val['NUTS_ID'] + '<br>' + 'Name: ' + val['NUTS_NAME'];
     }
-    return res;
+    return res;/*/
   }
 
   ngAfterViewInit(): void {

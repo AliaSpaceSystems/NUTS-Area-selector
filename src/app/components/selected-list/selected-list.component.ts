@@ -2,6 +2,7 @@ import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {Component, ElementRef, OnInit} from '@angular/core';
 import {MatChipInputEvent} from '@angular/material/chips';
 import { SideNavService } from '../../services/side-nav.service';
+import {MapService} from "../../services/map.service";
 
 export interface Zone {
   name: string;
@@ -22,7 +23,9 @@ export class SelectedListComponent implements OnInit {
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
   zones: Zone[] = [];
 
-  constructor(private sideNavService: SideNavService) {
+  objectKeys = Object.keys;
+
+  constructor(private sideNavService: SideNavService, public mapService: MapService) {
   }
 
   ngOnInit() {
@@ -36,7 +39,6 @@ export class SelectedListComponent implements OnInit {
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
 
-    // Add our fruit
     if (value) {
       this.zones.push({name: value});
     }
