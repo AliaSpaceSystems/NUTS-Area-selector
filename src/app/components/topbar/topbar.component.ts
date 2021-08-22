@@ -22,13 +22,7 @@ export class TopbarComponent {
   }
 
   clickDone() {
-    this.openBottomSheet();/*
-    console.log("done clicked");
-    this.waitForReply = true;
-    setTimeout (() => {
-      this.waitForReply = false;
-      this.openBottomSheet();
-    }, 5000);*/
+    this.openBottomSheet();
   }
 
   clickMenu() {

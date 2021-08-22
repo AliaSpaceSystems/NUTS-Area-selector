@@ -13,31 +13,6 @@ export class SideNavService {
   private selzones: SelectedListComponent;
 
   constructor() { }
-/*
-  public addAreas(){
-    let features = this.map.getSelected();
-    for (let key in features) {
-      let val = features[key].getProperties();
-      if (this.map.selectedLayer.includes('gadm')) {
-        if (typeof val['NAME_5'] == "string") {
-          this.selzones.addZone(features[key].getProperties()['NAME_5']);
-        } else if (typeof val['NAME_4'] == "string") {
-          this.selzones.addZone(features[key].getProperties()['NAME_4']);
-        } else if (typeof val['NAME_3'] == "string") {
-          this.selzones.addZone(features[key].getProperties()['NAME_3']);
-        } else if (typeof val['NAME_2'] == "string") {
-          this.selzones.addZone(features[key].getProperties()['NAME_2']);
-        } else if (typeof val['NAME_1'] == "string") {
-          this.selzones.addZone(features[key].getProperties()['NAME_1']);
-        } else if (typeof val['NAME_0'] == "string") {
-          this.selzones.addZone(features[key].getProperties()['NAME_0']);
-        }
-      } else if (this.map.selectedLayer.includes('nuts')) {
-        this.selzones.addZone(features[key].getProperties()['NUTS_NAME']);
-      }
-    }
-  }
-*/
 
   public setSelectedZones(selzones: SelectedListComponent) {
     this.selzones = selzones;
@@ -58,8 +33,8 @@ export class SideNavService {
   public setLayer(layer: number) {
     this.map.setLayer(layer);
   }
+
   public toggle() {
     this.sidenav.toggle();
-    //return this.sideNavToggleSubject.next(null);
   }
 }

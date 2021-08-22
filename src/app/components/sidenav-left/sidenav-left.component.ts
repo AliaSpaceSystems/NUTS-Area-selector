@@ -10,9 +10,7 @@ import {layerArray, MapService} from "../../services/map.service";
 })
 
 export class SidenavLeftComponent implements AfterViewInit {
-  //@ViewChild('sidenav') public sidenav: MatSidenav;
   @ViewChild('sidenav') public sidenav: MatDrawer;
-  //@ViewChild('layer') public layer: string;
   sds: SideNavService;
 
   objectKeys = Object.keys;
@@ -28,35 +26,10 @@ export class SidenavLeftComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.sideNavService.setSidenav(this.sidenav);
-    /*
-    this.sideNavService.sideNavToggleSubject.subscribe(()=> {
-      console.log("toggle called");
-      this.sidenav.toggle();
-    });*/
+
   }
-/*
-  addAreas(){
-    this.sideNavService.addAreas();
-  }
-*/
+
   layerChanged(val) {
-    //console.log("Layer chaged: " + val);
     this.sideNavService.setLayer(val);
   }
-/*
-  ngOnInit(){
-    layerArray.forEach( (layer,index) => {
-      console.log("layer: " + layer.group + "_" + layer.level)
-        if (layer.group in this.layerGroups) {
-          this.layerGroups[layer.group].push(index);
-        } else {
-          this.layerGroups[layer.group] = [];
-        }
-      }
-    )
-    for (let index in this.layerGroups) {
-      console.log("index: " + index)
-    }
-  }
-*/
 }
