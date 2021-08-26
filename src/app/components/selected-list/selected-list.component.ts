@@ -32,26 +32,18 @@ export class SelectedListComponent implements OnInit {
     this.sideNavService.setSelectedZones(this);
   }
 
-  addZone(value: string ){
-    this.zones.push({name: value});
+  chipClick(zone: string) {
+    //console.log("chipZone: " + zone);
+    this.sideNavService.higlightZone(zone);
   }
 
-  add(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-
-    if (value) {
-      this.zones.push({name: value});
-    }
-
-    // Clear the input value
-    //event.chipInput!.clear();
+  chipFocus(zone: string, event) {
+    console.log("chipFocus: " + event.clientX);
+    //this.sideNavService.showTip(zone, event);
   }
 
-  remove(zone: Zone): void {
-    const index = this.zones.indexOf(zone);
-
-    if (index >= 0) {
-      this.zones.splice(index, 1);
-    }
+  remove(zone: string){
+    this.sideNavService.removeZone(zone);
   }
+
 }

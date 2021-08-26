@@ -2,7 +2,9 @@ import {Component, OnInit, ChangeDetectionStrategy, Input, ElementRef, ViewChild
 import Map from 'ol/Map';
 import View from 'ol/View'
 import * as olProj from 'ol/proj';
-import VectorLayer from 'ol/layer/Vector';
+//import VectorLayer from 'ol/layer/Vector';
+import {Vector as VectorLayer} from 'ol/layer';
+import {Vector} from 'ol/source';
 // import VectorSource from 'ol/source/Vector';
 import VectorTile from 'ol/layer/VectorTile';
 import { VectorTile as VectorTileSource } from 'ol/source';
@@ -20,7 +22,10 @@ import { SideNavService } from '../../services/side-nav.service';
 import MVT from "ol/format/MVT";
 // import {Select} from "ol/interaction";
 import {Overlay} from "ol";
+import * as olExtent from 'ol/extent';
 import {layerArray, MapService} from "../../services/map.service";
+
+import {Polygon} from "ol/geom"
 
 class SelectableVectorTileLayer {
   vectorTileLayer: VectorTile<any>;
@@ -28,10 +33,11 @@ class SelectableVectorTileLayer {
   vectorTileSource: VectorTileSource<any>;
   selection: {};
 
-  constructor(private map: Map, private layerID: number, private layerName: string, private globalSelection: {}, private url: string,
-              private composeTipCB: (val: object) => string) {
+  constructor(private map: Map, private comp: any, private layerID: number, private layerName: string, private globalSelection: {},
+              private url: string, private composeTipCB: (val: object) => string,
+              private getShortNome: (val: object) => string) {
 
-    this.selection = globalSelection
+    this.selection = globalSelection;
 
     this.vectorTileSource = new VectorTileSource({
       tilePixelRatio: 1, // oversampling when > 1
@@ -61,33 +67,51 @@ class SelectableVectorTileLayer {
       renderMode: 'vector',
       source: this.vectorTileLayer.getSource(),
       style: (feature) => {
-        if (this.layerID + '-' + feature.getId() in this.selection) {
-          return new Style({
-            stroke: new Stroke({
-              color: 'rgba(200,20,20,0.8)',
-              width: 2,
-            }),
-            fill: new Fill({
-              color: 'rgba(200,20,20,0.4)',
-            }),
-          });
+        let currFeatureID = this.layerID + '-' + feature.getId();
+        if ( currFeatureID in this.selection) {
+          /* global preview layer???
+          this.selectionSourceGlobal.addFeatures([feature.clone()]);
+          this.selectionSourceGlobal.changed();
+          */
+          if (currFeatureID === comp.highlighted) {
+            return new Style({
+              stroke: new Stroke({
+                color: 'rgba(20,20,200,0.8)',
+                width: 2,
+              }),
+              fill: new Fill({
+                color: 'rgba(20,20,200,0.4)',
+              }),
+            });
+          } else {
+            return new Style({
+              stroke: new Stroke({
+                color: 'rgba(200,20,20,0.8)',
+                width: 2,
+              }),
+              fill: new Fill({
+                color: 'rgba(200,20,20,0.4)',
+              }),
+            });
+          }
         }
       },
     });
     this.map.addLayer(this.vectorTileLayer);
     this.hide();
   }
-
+/*
   clearSelection(){
     this.selection = {};
     this.selectionLayer.changed();
   }
-
+*/
   composeTip(val) {
     return this.composeTipCB(val);
   }
 
   selectEvent(event) {
+    this.comp.highlighted = "";
     this.vectorTileLayer.getFeatures(event.pixel).then((features) => {
 
       const feature = features[0];
@@ -98,18 +122,26 @@ class SelectableVectorTileLayer {
       const fid = feature.getId();
       feature['layerID'] = this.layerID;
       feature['layerName'] = this.layerName;
+      feature['shortName'] = this.getShortNome(feature.getProperties());
+      feature['selectedAtZoom'] = this.map.getView().getZoom();
 
       if (this.layerID + '-' + fid in this.selection) {
         console.log("fid to be removed: " + fid);
         delete this.selection[this.layerID + '-' + fid];
         this.selectionLayer.changed();
+
       } else {
 
         this.selection[this.layerID + '-' + fid] = feature;
         this.selectionLayer.changed();
+
       }
 
     });
+  }
+
+  showSelection(){
+    this.selectionLayer.setVisible(true);
   }
 
   hide(){
@@ -133,10 +165,12 @@ class SelectableVectorTileLayer {
 })
 export class MapComponent implements OnInit, AfterViewInit {
   @Input() map: Map;
-  //wfsLayerGadm: VectorLayer<any>;
   private popupOverlay: Overlay;
   @ViewChild('popup') popup: ElementRef;
-  //selectionLayerGadm: VectorTile<any>;
+  /* global preview layer???
+  selectionSourceGlobal: VectorTileSource<any>;
+  selectionLayerGlobal: VectorTile<any>;
+   */
   doSpin: boolean = false;
 
   vectorLayers: {};
@@ -144,10 +178,13 @@ export class MapComponent implements OnInit, AfterViewInit {
   selectedLayer: number;
   globalSelection: {};
 
+  highlighted: string;
+
 
 
   constructor(private elementRef: ElementRef, private sideNavService: SideNavService, private mapService: MapService) {
   }
+
   setLayer(layer: number) {
     console.log("Layer chaged on map: " + layer);
     this.vectorLayers[this.selectedLayer].hide();
@@ -156,6 +193,10 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.vectorLayers[this.selectedLayer].show();
   }
 
+  removeZone(zone: string){
+    delete this.globalSelection[zone];
+    this.vectorLayers[this.selectedLayer].selectionLayer.changed();
+  }
 
   ngOnInit() {
 
@@ -163,14 +204,37 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.mapService.featureSelection = {};
     this.globalSelection = this.mapService.featureSelection;
     this.selectedLayer = 0;
+    this.highlighted = "";
 
+    /* global preview layer???
+    this.selectionSourceGlobal = new Vector({
+    });
+
+    this.selectionLayerGlobal = new VectorLayer({
+      source: this.selectionSourceGlobal,
+      style: new Style({
+        fill: new Fill({
+          color: 'rgba(0, 0, 255, 0.3)',
+        }),
+        stroke: new Stroke({
+          color: '#33ccff00',
+          width: 2,
+        })
+      })
+    });
+    */
     layerArray.forEach( (layer,index) => {
-      this.vectorLayers[index] = new SelectableVectorTileLayer(this.map, index,
-        layer.group + "_" + layer.level, this.globalSelection, layer.url, layer.composeTipCB);
+      this.vectorLayers[index] = new SelectableVectorTileLayer(this.map, this ,index,
+        layer.group + "_" + layer.level, this.globalSelection, layer.url,
+        layer.composeTipCB, layer.getShortName);
       }
     )
+    /* global preview layer???
+    this.map.addLayer(this.selectionLayerGlobal);
+    */
 
     this.vectorLayers[this.selectedLayer].show();
+
 
     this.map.IMAGE_RELOAD_ATTEMPTS = 3;
     this.map.setTarget(this.elementRef.nativeElement);
@@ -200,6 +264,17 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   };
 
+  showAllSelection() {
+    /* global preview layer???
+    for (let vectorLayersKey in this.vectorLayers) {
+      this.vectorLayers[vectorLayersKey].hide();
+      this.selectionLayerGlobal.setVisible(true);
+      //this.vectorLayers[vectorLayersKey].showSelection();
+    }
+   */
+  }
+
+
   getSelected() {
     console.log("features: " + Object.keys(this.vectorLayers[this.selectedLayer].selection).length);
     return this.vectorLayers[this.selectedLayer].selection;
@@ -209,6 +284,30 @@ export class MapComponent implements OnInit, AfterViewInit {
     return this.vectorLayers[this.selectedLayer].composeTip(val);
   }
 
+  higlightZone(zone: string) {
+    if (this.globalSelection[zone].layerID != this.selectedLayer) {
+      this.setLayer(this.globalSelection[zone].layerID);
+    }
+    this.highlighted = zone;
+    let ext = this.globalSelection[zone].getGeometry().getExtent();
+    let center = olExtent.getCenter(ext);
+    //this.map.getView().fit(ext, this.map.getSize());
+    this.map.getView().animate({
+      center: center,
+      zoom: this.globalSelection[zone].selectedAtZoom,
+      duration: 500
+    })
+    this.vectorLayers[this.selectedLayer].selectionLayer.changed();
+  }
+
+/*
+  showTip(zone: string, event) {
+    this.popup.nativeElement.innerHTML = zone;
+    this.popup.nativeElement.hidden = false;
+    this.popupOverlay.setPosition((event.clientX, event.clientY));
+  }
+*/
+
   ngAfterViewInit(): void {
     this.sideNavService.setMap(this);
 
@@ -217,6 +316,12 @@ export class MapComponent implements OnInit, AfterViewInit {
       offset: [9, 9]
     });
     this.map.addOverlay(this.popupOverlay);
+
+    this.map.getViewport().addEventListener('mouseout', (evt) => {
+      //console.log("mouseOut");
+      this.popup.nativeElement.innerHTML = '';
+      this.popup.nativeElement.hidden = true;
+    }, false);
 
     this.map.on('pointermove', (event) => {
       //console.log(event)

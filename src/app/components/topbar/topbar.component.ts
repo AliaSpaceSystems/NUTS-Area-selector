@@ -22,6 +22,7 @@ export class TopbarComponent {
   }
 
   clickDone() {
+    this.sideNavService.showAllSelection();
     this.openBottomSheet();
   }
 

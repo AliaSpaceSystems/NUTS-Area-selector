@@ -18,6 +18,20 @@ export class SideNavService {
     this.selzones = selzones;
   }
 
+  public removeZone(zone: string) {
+    this.map.removeZone(zone);
+  }
+
+  public higlightZone(zone: string) {
+    this.map.higlightZone(zone);
+  }
+/*
+  public showTip(zone: string, event) {
+    this.map.showTip(zone, event);
+  }
+
+ */
+
   public setSidenav(sidenav: MatDrawer) {
     this.sidenav = sidenav;
   }
@@ -32,6 +46,10 @@ export class SideNavService {
 
   public setLayer(layer: number) {
     this.map.setLayer(layer);
+  }
+
+  public showAllSelection() {
+    this.map.showAllSelection();
   }
 
   public toggle() {
