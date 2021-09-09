@@ -23,7 +23,10 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SheetBottomComponent } from './components/sheet-bottom/sheet-bottom.component';
 import { MatSpinnerOverlayComponent } from './components/mat-spinner-overlay/mat-spinner-overlay.component';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 import { HttpClientModule } from '@angular/common/http';
+import {MatNativeDateModule} from "@angular/material/core";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -50,9 +53,13 @@ import { HttpClientModule } from '@angular/common/http';
     MatDividerModule,
     MatProgressSpinnerModule,
     MatBottomSheetModule,
-    HttpClientModule
+    HttpClientModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
-  providers: [DecimalPipe, SideNavService],
+  providers: [DecimalPipe, SideNavService, MatDatepickerModule],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

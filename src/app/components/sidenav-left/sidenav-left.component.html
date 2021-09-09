@@ -2,7 +2,7 @@
     <div >
     <mat-form-field appearance="fill">
       <mat-label>Layer data</mat-label>
-      <mat-select #layerDataset value="{{objectKeys(mapService.layerGroups)[0]}}">
+      <mat-select #layerDataset [(value)]="layerGroup">
         <mat-option *ngFor="let group of objectKeys(mapService.layerGroups)" value="{{group}}">{{group}}</mat-option>
       </mat-select>
       <mat-divider></mat-divider>
@@ -10,11 +10,11 @@
       <div>
       <mat-form-field appearance="fill">
         <mat-label>Layer level</mat-label>
-      <mat-select (selectionChange)="layerChanged($event.value)">
+      <mat-select [(ngModel)]="layer" [(value)]="layer" (selectionChange)="layerChanged($event.value)">
 <!--                  [(value)]="layerArray[objectKeys(layerArray)[0]].group+'_'+layerArray[objectKeys(layerArray)[0]].level">-->
-        <ng-container *ngFor="let layer of objectKeys(layerArray)">
-          <mat-option *ngIf="layerDataset.value == layerArray[layer].group" [value]="layer">
-            {{layerArray[layer].group}}_{{layerArray[layer].level}}
+          <ng-container *ngFor="let layerK of objectKeys(layerArray)">
+          <mat-option *ngIf="layerDataset.value == layerArray[layerK].group" [value]="layerK">
+            {{layerArray[layerK].group}}_{{layerArray[layerK].level}}
           </mat-option>
         </ng-container>
       </mat-select>

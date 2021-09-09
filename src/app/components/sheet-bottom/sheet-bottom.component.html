@@ -1,25 +1,57 @@
-<h1>Select elaboration:</h1>
+<h1>Time:</h1>
 <div>
   <mat-form-field appearance="fill">
-    <mat-label>Mode</mat-label>
-    <mat-select #elabMode value="single">
-      <mat-option value="single">Single area</mat-option>
-      <mat-option value="multi">Multiple areas</mat-option>
-    </mat-select>
-    <mat-divider></mat-divider>
+    <mat-label>Enter a date range</mat-label>
+<!--    <mat-date-range-input [rangePicker]="picker">-->
+    <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+      <input matStartDate formControlName="start" placeholder="Start date">
+      <input matEndDate formControlName="end" placeholder="End date">
+    </mat-date-range-input>
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-date-range-picker #picker></mat-date-range-picker>
   </mat-form-field>
+</div>
+<h1>Data Type:</h1>
+<div>
   <div>
     <mat-form-field appearance="fill">
-      <mat-label>Data source</mat-label>
-      <mat-select #elabSource value="dsm_africa">
+      <mat-label>Source</mat-label>
+      <mat-select [(ngModel)]="dataSource">
+        <mat-option value="copernicus">Copernicus</mat-option>
+  <!--      <mat-option value="eurostat">Eurostat</mat-option>-->
+      </mat-select>
+      <mat-divider></mat-divider>
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field appearance="fill">
+      <mat-label>Data</mat-label>
+      <mat-select [(ngModel)]="data">
         <mat-option value="dsm_africa">DSM Africa</mat-option>
         <mat-option value="s2_2020">Sentine 2 2020</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
+</div>
+<h1>Mosaic Type:</h1>
+<div>
+  <mat-form-field appearance="fill">
+    <mat-label>Mosaic</mat-label>
+    <mat-select [(ngModel)]="mosaicType">
+      <mat-option value="raw">Raw</mat-option>
+      <mat-option value="raw_centred">Raw centred</mat-option>
+      <mat-option value="optimised_centred">Optimised centered</mat-option>
+    </mat-select>
+    <mat-divider></mat-divider>
+  </mat-form-field>
+</div>
+<div>
   <div>
-    <button mat-button color="primary" (click)="doEstimation()">Estimate</button>
+    <button mat-button color="primary" (click)="doSubmission()">Submit</button>
   </div>
+    <div>
+      <p>{{message}}</p>
+    </div>
   <ng-container *ngIf="doSpin">
     <app-mat-spinner-overlay diameter="50">
     </app-mat-spinner-overlay>

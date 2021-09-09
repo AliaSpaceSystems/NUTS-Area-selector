@@ -2,13 +2,14 @@
 // import { DrawerComponent } from './drawer/drawer.component';
 import {MatDrawer, MatSidenav} from '@angular/material/sidenav';
 import {MapComponent} from "../components/map/map.component";
+import {SidenavLeftComponent} from "../components/sidenav-left/sidenav-left.component";
 import {SelectedListComponent} from "../components/selected-list/selected-list.component";
 //import { BehaviorSubject } from 'rxjs';
 //@Injectable()
 export class SideNavService {
 
   //public sideNavToggleSubject: BehaviorSubject<any> = new BehaviorSubject(null);
-  private sidenav: MatDrawer;
+  private sidenav: SidenavLeftComponent;
   private map: MapComponent;
   private selzones: SelectedListComponent;
 
@@ -23,7 +24,11 @@ export class SideNavService {
   }
 
   public higlightZone(zone: string) {
+    if (this.map.globalSelection[zone].layerID != this.sidenav.layer) {
+      this.sidenav.setLayerSelection(this.map.globalSelection[zone].layerID);
+    }
     this.map.higlightZone(zone);
+
   }
 /*
   public showTip(zone: string, event) {
@@ -32,7 +37,7 @@ export class SideNavService {
 
  */
 
-  public setSidenav(sidenav: MatDrawer) {
+  public setSidenav(sidenav: SidenavLeftComponent) {
     this.sidenav = sidenav;
   }
 
@@ -53,6 +58,6 @@ export class SideNavService {
   }
 
   public toggle() {
-    this.sidenav.toggle();
+    this.sidenav.sidenav.toggle();
   }
 }
