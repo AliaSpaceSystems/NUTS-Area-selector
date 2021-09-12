@@ -8,10 +8,10 @@ import { ScalelineComponent } from './components/scaleline/scaleline.component';
 import { MousePositionComponent } from './components/mouse-position/mouse-position.component';
 import { SidenavLeftComponent } from './components/sidenav-left/sidenav-left.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {MatSidenavModule} from "@angular/material/sidenav";
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {MatSelectModule} from "@angular/material/select";
-import {MatButtonModule} from "@angular/material/button";
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatSelectModule} from '@angular/material/select';
+import {MatButtonModule} from '@angular/material/button';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatIconModule} from '@angular/material/icon';
 import { TopbarComponent } from './components/topbar/topbar.component';
@@ -24,9 +24,15 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SheetBottomComponent } from './components/sheet-bottom/sheet-bottom.component';
 import { MatSpinnerOverlayComponent } from './components/mat-spinner-overlay/mat-spinner-overlay.component';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import { HttpClientModule } from '@angular/common/http';
-import {MatNativeDateModule} from "@angular/material/core";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {MatNativeDateModule} from '@angular/material/core';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { AuthComponent } from './auth/auth.component';
+import {RouterModule} from '@angular/router';
+import {AuthGuard} from './auth/auth.guard';
+import {MatInputModule} from '@angular/material/input';
+import {AuthInterceptor} from './auth/auth.interceptor';
+import { AuthModule } from './auth/auth.module';
 
 @NgModule({
   declarations: [
@@ -38,13 +44,15 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
     TopbarComponent,
     SelectedListComponent,
     SheetBottomComponent,
-    MatSpinnerOverlayComponent
+    MatSpinnerOverlayComponent,
+    AuthComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     MatSidenavModule,
     MatFormFieldModule,
+    MatInputModule,
     MatSelectModule,
     MatButtonModule,
     MatToolbarModule,
@@ -57,9 +65,26 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
     MatDatepickerModule,
     MatNativeDateModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterModule.forRoot([
+      { path: '', redirectTo: 'map', pathMatch: 'full' },
+      { path: 'map', component: MapComponent, canLoad: [AuthGuard],
+        loadChildren: () => import('./auth/auth.module').then( m => m.AuthModule) },
+      { path: 'auth', component: AuthComponent }
+    ]),
+    AuthModule
   ],
-  providers: [DecimalPipe, SideNavService, MatDatepickerModule],
+  providers: [
+    AuthGuard,
+    DecimalPipe,
+    SideNavService,
+    MatDatepickerModule,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

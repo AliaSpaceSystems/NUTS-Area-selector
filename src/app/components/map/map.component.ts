@@ -27,11 +27,16 @@ import {layerArray, MapService} from "../../services/map.service";
 
 import {Polygon} from "ol/geom"
 
+import TileLayer from 'ol/layer/Tile';
+import OSM from 'ol/source/OSM';
+
 class SelectableVectorTileLayer {
   vectorTileLayer: VectorTile<any>;
   selectionLayer: VectorTile<any>;
   vectorTileSource: VectorTileSource<any>;
   selection: {};
+
+
 
   constructor(private map: Map, private comp: any, private layerID: number, private layerName: string, private globalSelection: {},
               private url: string, private composeTipCB: (val: object) => string,
@@ -164,7 +169,7 @@ class SelectableVectorTileLayer {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapComponent implements OnInit, AfterViewInit {
-  @Input() map: Map;
+  map: Map;
   private popupOverlay: Overlay;
   @ViewChild('popup') popup: ElementRef;
   /* global preview layer???
@@ -199,6 +204,19 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    console.log('ngOnInit MapComponent');
+
+     this.map = new Map({
+      view: new View({
+        center: [0, 0],
+        zoom: 1,
+      }),
+      layers: [
+        new TileLayer({
+          source: new OSM(),
+        }),
+      ]
+    });
 
     this.vectorLayers = {};
     this.mapService.featureSelection = {};
