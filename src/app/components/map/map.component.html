@@ -14,5 +14,7 @@
 
 <div class="footer" *ngIf="map">
   <app-scaleline [map]="map"></app-scaleline>
-  <app-mouse-position [map]="map" positionTemplate="{x}, {y} m"></app-mouse-position>
+  <app-mouse-position
+    style="color: white; text-align: right"
+    [map]="map" positionTemplate="{x}, {y} m"></app-mouse-position>
 </div>
