@@ -1,6 +1,11 @@
 <mat-form-field class="zone-chip-list" appearance="fill">
   <mat-label>Selected:</mat-label>
   <mat-chip-list #chipList aria-label="Fruit selection" >
+<!--    <mat-chip *ngFor="let zone of identifiers"-->
+<!--              [removable]="removable" (removed)="remove(zone)" (click)="chipClick(zone)" (mouseover)="chipFocus(zone, $event)">-->
+<!--      {{mapService.featureSelection[zone].shortName}}<br>{{mapService.featureSelection[zone].layerName}}-->
+<!--      <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>-->
+<!--    </mat-chip>-->
     <mat-chip *ngFor="let zone of objectKeys(mapService.featureSelection)"
               [removable]="removable" (removed)="remove(zone)" (click)="chipClick(zone)" (mouseover)="chipFocus(zone, $event)">
       {{mapService.featureSelection[zone].shortName}}<br>{{mapService.featureSelection[zone].layerName}}

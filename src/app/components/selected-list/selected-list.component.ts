@@ -1,8 +1,10 @@
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import {Component, ElementRef, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
 import {MatChipInputEvent} from '@angular/material/chips';
 import { SideNavService } from '../../services/side-nav.service';
 import {MapService} from "../../services/map.service";
+import {Subscription} from 'rxjs';
+import {delay} from 'rxjs/operators';
 
 export interface Zone {
   name: string;
@@ -16,20 +18,35 @@ export interface Zone {
 })
 
 
-export class SelectedListComponent implements OnInit {
+export class SelectedListComponent implements OnInit, OnDestroy {
   selectable = true;
   removable = true;
   addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
   zones: Zone[] = [];
+  sub: Subscription;
+
+  identifiers: string[] = [];
 
   objectKeys = Object.keys;
 
-  constructor(private sideNavService: SideNavService, public mapService: MapService) {
+  constructor(
+    private sideNavService: SideNavService,
+    public mapService: MapService,
+    private readonly changeDetector: ChangeDetectorRef,
+  ) {
   }
 
   ngOnInit() {
     this.sideNavService.setSelectedZones(this);
+
+    this.mapService.selectedLayers.pipe(
+      delay(0.05)
+    ).subscribe((ids: string[]) => {
+      console.log('New selectedLayers ids are ', ids);
+      this.identifiers = [...ids];
+      this.changeDetector.detectChanges();
+    });
   }
 
   chipClick(zone: string) {
@@ -44,6 +61,12 @@ export class SelectedListComponent implements OnInit {
 
   remove(zone: string){
     this.sideNavService.removeZone(zone);
+  }
+
+  ngOnDestroy(): void {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
   }
 
 }

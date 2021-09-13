@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import {BehaviorSubject, Observable} from 'rxjs';
 
 
 interface Layer {
@@ -129,6 +130,9 @@ function getShortNameGadm(val) {
 })
 
 export class MapService {
+  get selectedLayers(): Observable<string[]> {
+    return this._selectedLayers.asObservable();
+  }
   public layerGroups: {} = {};
 
   constructor() {
@@ -143,5 +147,8 @@ export class MapService {
   }
 
   public featureSelection: {};
+
+  // tslint:disable-next-line:variable-name
+  _selectedLayers = new BehaviorSubject<string[]>([]);
 
 }
