@@ -18,3 +18,15 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   right: .5em;
   left: unset !important;
 }
+
+.ol-viewport {
+  height: calc(100% - 150px) !important;
+}
+
+.mouseposition-control {
+  margin-right: 20px;
+}
+
+.ol-scale-line {
+  transform: translateY(24px);
+}

@@ -1,6 +1,20 @@
+<header style="padding: 0px">
+  <app-topbar></app-topbar>
+</header>
+
 <div id="map"></div>
 <div #popup class="popup" [hidden]="true"></div>
+
 <ng-container *ngIf="doSpin">
   <app-mat-spinner-overlay overlay="true">
   </app-mat-spinner-overlay>
 </ng-container>
+
+<!-- From app.component.html FIXME-->
+
+<div class="footer" *ngIf="map">
+  <app-scaleline [map]="map"></app-scaleline>
+  <app-mouse-position
+    style="color: white; text-align: right"
+    [map]="map" positionTemplate="{x}, {y} m"></app-mouse-position>
+</div>

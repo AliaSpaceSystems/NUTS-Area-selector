@@ -1,0 +1,60 @@
+
+
+<!--<div *ngIf="form">-->
+
+<!--  <form [formGroup]="form" (ngSubmit)="onSendLogin()" >-->
+
+<!--    <mat-form-field appearance="fill">-->
+<!--      <mat-label>Username</mat-label>-->
+<!--      <input matInput type="text" formControlName="username">-->
+<!--    </mat-form-field>-->
+
+
+<!--    <mat-form-field appearance="fill" >-->
+<!--      <mat-label>Enter your password</mat-label>-->
+<!--      <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">-->
+<!--      <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">-->
+<!--        <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>-->
+<!--      </button>-->
+<!--    </mat-form-field>-->
+
+<!--    <button mat-button color="primary" type="submit">-->
+<!--      Login</button>-->
+
+<!--  </form>-->
+<!--</div>-->
+
+<div class="session">
+  <form [formGroup]="form" class="log-in" autocomplete="off">
+    <h4>EO4Africa <span>Area selector</span></h4>
+    <p>Welcome back! Log in to your account</p>
+
+
+    <div class="floating-label">
+      <input placeholder="Username" type="text" id="username" autocomplete="off" formControlName="username">
+      <label for="username">Username</label>
+      <div class="icon">
+      </div>
+    </div>
+    <div class="floating-label">
+      <input placeholder="Password" [type]="hidePassword ? 'password' : 'text'" id="password" autocomplete="off"
+             formControlName="password">
+      <label for="password">Password</label>
+      <button mat-icon-button
+        (click)="hidePassword = !hidePassword">
+        <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+    </div>
+
+    <div style="color: red">
+      <p [ngStyle]="{opacity: authFailed ? 1 : 0}">Login failed! Please try again</p>
+    </div>
+
+    <div class="floating-label">
+    <button mat-raised-button color="primary" [disabled]="!form?.valid"
+            class="login-button"
+      (click)="onSendLogin()">
+      Login</button>
+    </div>
+  </form>
+</div>
