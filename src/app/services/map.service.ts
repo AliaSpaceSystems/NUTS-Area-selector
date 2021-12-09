@@ -13,7 +13,8 @@ interface Layer {
 export const layerArray: Layer[] = [{
   group: 'GADM',
   level: 'ALL',
-  url: 'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm@EPSG%3A3857@pbf',
+  //url: 'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm@EPSG%3A3857@pbf',
+  url: 'https://localhost:8443/apiman-gateway/alia/gadm_all/2.0',
   composeTipCB: compseTipGadm,
   getShortName: getShortNameGadm
 },{

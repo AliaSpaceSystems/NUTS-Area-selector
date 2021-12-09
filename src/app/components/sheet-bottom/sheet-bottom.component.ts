@@ -37,6 +37,7 @@ export class SheetBottomComponent {
     this.doSpin = true;
     //this.getData();
     this.message = this.generateRequest();
+    this.getData(this.message);
     setTimeout (() => {
       this.doSpin = false;
       this.noReply = true;
@@ -64,12 +65,16 @@ export class SheetBottomComponent {
       timeBuffer = "()";
     }
 
-    return "http://polyelab.alia-space.com/odata/v1/Orders?OData.CSC.Source(datasource="+ this.dataSource +
-      ",data=" + this.data + ",mosaicType=" + this.mosaicType + ",timeRange=" + timeBuffer + ", polygons=" + buffer + ")";
+    //return "http://polyelab.alia-space.com/api/v1/estimate?datasource="+ this.dataSource +
+    return this.url + "estimate?token=" + localStorage.getItem('access_token');
+    return this.url + "estimate?datasource="+ this.dataSource +
+      ",data=" + this.data + ",mosaicType=" + this.mosaicType + ",timeRange=" + timeBuffer + ", polygons=" + buffer +
+      ",token=" + localStorage.getItem('access_token');
+
   }
 
-  getData() {
-    this.http.get<any>(this.url+"create?id=1&name=test", {observe: 'response'}).subscribe(resp => {
+  getData(url) {
+    this.http.get<any>(url, {observe: 'response'}).subscribe(resp => {
       console.log("Location:" + resp.headers.get('Location'));
       console.log("Body: " + JSON.stringify(resp.body));
     });

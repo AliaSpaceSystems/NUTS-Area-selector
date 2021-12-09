@@ -10,7 +10,8 @@ import {of} from 'rxjs';
 })
 export class AuthService {
 
-  public readonly authBaseUrl = 'http://localhost:8080/auth/realms/EO4A/protocol/openid-connect/token';
+  public readonly authBaseUrl = 'https://keycloak.alia-space.com:8443/auth/realms/EO4A/protocol/openid-connect/token';
+  //http://localhost:8080/auth/realms/EO4A/protocol/openid-connect/token';
   private readonly clientId = 'eo4a-angular';
   public redirectUrl: string = null;      // redirect url after auth
 

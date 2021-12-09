@@ -50,7 +50,7 @@ class SelectableVectorTileLayer {
       tileGrid: createXYZ({maxZoom: 19}),
       format: new MVT({featureClass: Feature}),
       url: url +
-        '/{z}/{x}/{-y}.pbf'
+        '/{z}/{x}/{-y}.pbf?apikey=b2bc0eaa-d980-4df0-b118-de851903cb63'
     })
 
     this.vectorTileLayer = new VectorTile({

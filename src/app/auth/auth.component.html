@@ -38,7 +38,7 @@
     </div>
     <div class="floating-label">
       <input placeholder="Password" [type]="hidePassword ? 'password' : 'text'" id="password" autocomplete="off"
-             formControlName="password">
+             formControlName="password" (keyup.enter)="onSendLogin()">
       <label for="password">Password</label>
       <button mat-icon-button
         (click)="hidePassword = !hidePassword">
