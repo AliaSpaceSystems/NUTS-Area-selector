@@ -9,10 +9,10 @@ interface Layer {
   getShortName: (val: object) => string;
 }
 
-//let geoHost='http://51.210.249.119:8080/geoserver';
+let geoHost='http://51.210.249.119:8080/geoserver';
 //let geoHost='http://k8s3.alia-space.com:30448/geoserver';
 //let geoHost='http://k8s3.alia-space.com:30449/gs';
-let geoHost='../gs';
+//let geoHost='../gs';
 
 export const layerArray: Layer[] = [{
   group: 'GADM',

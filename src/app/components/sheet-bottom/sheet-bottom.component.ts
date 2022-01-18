@@ -16,7 +16,7 @@ export class SheetBottomComponent {
   okReply: boolean = false;
   doSpin: boolean = false;
   message: string = "";
-  url: string = 'http://localhost:9090/';
+  url: string = 'http://k8s1.alia-space.com:30099/';
   headerProperty: String = '';
   dataSource: string = "copernicus";
   data: string = "dsm_africa";
@@ -27,6 +27,11 @@ export class SheetBottomComponent {
     end: new FormControl()
   });
 
+  sources: {} = {
+    DEM: ["DS"],
+    Sentinel2: ["L1C", "L2A"]
+  }
+  objectKeys = Object.keys;
 
   constructor(private _bottomSheetRef: MatBottomSheetRef<SheetBottomComponent>,
               private sideNavService: SideNavService,
