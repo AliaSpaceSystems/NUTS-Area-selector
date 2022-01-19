@@ -17,8 +17,8 @@
     <mat-form-field appearance="fill">
       <mat-label>Source</mat-label>
       <mat-select [(ngModel)]="dataSource">
-        <mat-option value="copernicus">Copernicus</mat-option>
-  <!--      <mat-option value="eurostat">Eurostat</mat-option>-->
+        <mat-option value="DEM">DEM</mat-option>
+        <mat-option value="Sentinel-2">Sentinel-2</mat-option>
       </mat-select>
       <mat-divider></mat-divider>
     </mat-form-field>
@@ -27,8 +27,8 @@
     <mat-form-field appearance="fill">
       <mat-label>Data</mat-label>
       <mat-select [(ngModel)]="data">
-        <mat-option value="dsm_africa">DSM Africa</mat-option>
-        <mat-option value="s2_2020">Sentine 2 2020</mat-option>
+        <mat-option value="L1C">L1C</mat-option>
+        <mat-option value="L2A">L2A</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
@@ -56,9 +56,9 @@
     <app-mat-spinner-overlay diameter="50">
     </app-mat-spinner-overlay>
   </ng-container>
-  <ng-container *ngIf="noReply">
+  <ng-container *ngIf="okReply">
     <div>
-     <p>No reply from server!</p>
+     <p>Request submitted to server!</p>
     </div>
   </ng-container>
 </div>

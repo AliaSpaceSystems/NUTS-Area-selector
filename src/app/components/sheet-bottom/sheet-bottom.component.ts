@@ -13,10 +13,10 @@ import {MapService} from "../../services/map.service";
 })
 
 export class SheetBottomComponent {
-  noReply: boolean = false;
+  okReply: boolean = false;
   doSpin: boolean = false;
   message: string = "";
-  url: string = 'http://localhost:8080/';
+  url: string = 'http://localhost:9090/';
   headerProperty: String = '';
   dataSource: string = "copernicus";
   data: string = "dsm_africa";
@@ -33,51 +33,37 @@ export class SheetBottomComponent {
               private http: HttpClient, private mapService: MapService) {}
 
   doSubmission(){
-    this.noReply = false;
+    this.okReply = false;
     this.doSpin = true;
     //this.getData();
     this.message = this.generateRequest();
-    this.getData(this.message);
-    setTimeout (() => {
-      this.doSpin = false;
-      this.noReply = true;
-      console.log("Location: " + this.headerProperty);
-    }, 5000);
+    this.getData(this.message).subscribe((data: boolean) => {
+      this.doSpin=false;
+      this.okReply=true;
+    });
   }
 
   generateRequest() {
-    let buffer = "(";
-    let firstComma = true;
+    let userId = 1;
+    let layer = "";
+    let ROI = "";
     for (let featureKey in this.mapService.featureSelection){
-      if (firstComma) firstComma = false; else buffer += ",";
-      buffer += "[";
-      buffer += this.mapService.featureSelection[featureKey]['layerName'];
-      buffer += ",";
-      buffer += this.mapService.featureSelection[featureKey]['shortName'];
-      buffer += "]";
-    }
-    buffer += ")";
-
-    let timeBuffer = "";
-    try {
-      timeBuffer = "([" + this.range.get('start').value.toJSON() + "," + this.range.get('end').value.toJSON() + "])";
-    } catch(e) {
-      timeBuffer = "()";
+      layer = this.mapService.featureSelection[featureKey]['layerName'];
+      ROI = this.mapService.featureSelection[featureKey]['shortName'];
     }
 
-    //return "http://polyelab.alia-space.com/api/v1/estimate?datasource="+ this.dataSource +
-    return this.url + "estimate?token=" + localStorage.getItem('access_token');
-    return this.url + "estimate?datasource="+ this.dataSource +
-      ",data=" + this.data + ",mosaicType=" + this.mosaicType + ",timeRange=" + timeBuffer + ", polygons=" + buffer +
-      ",token=" + localStorage.getItem('access_token');
+    return this.url + "nuts/execute/" + userId + 
+      "?datasource=" + this.dataSource +
+      "&data=" + this.data + 
+      "&start=" + this.range.get('start').value.toISOString() + 
+      "&stop=" + this.range.get('end').value.toISOString()  + 
+      "&layer=" + layer +
+      "&ROI=" + ROI;
 
   }
 
   getData(url) {
-    this.http.get<any>(url, {observe: 'response'}).subscribe(resp => {
-      console.log("Location:" + resp.headers.get('Location'));
-      console.log("Body: " + JSON.stringify(resp.body));
-    });
+    return this.http.get<boolean>(url);
   }
 
   openLink(event: any): void {
