@@ -9,76 +9,81 @@ interface Layer {
   getShortName: (val: object) => string;
 }
 
+//let geoHost='http://51.210.249.119:8080/geoserver';
+//let geoHost='http://k8s3.alia-space.com:30448/geoserver';
+//let geoHost='http://k8s3.alia-space.com:30449/gs';
+let geoHost='../gs';
+
 export const layerArray: Layer[] = [{
   group: 'GADM',
   level: 'ALL',
-  url: 'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm@EPSG%3A3857@pbf',
+  url: geoHost + '/gwc/service/tms/1.0.0/gadm%3Agadm@EPSG%3A3857@pbf',
   composeTipCB: compseTipGadm,
   getShortName: getShortNameGadm
 },{
   group: 'GADM',
   level: '0',
-  url: 'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm36_0@EPSG%3A3857@pbf',
+  url: geoHost + '/gwc/service/tms/1.0.0/gadm%3Agadm36_0@EPSG%3A3857@pbf',
   composeTipCB: compseTipGadm,
   getShortName: getShortNameGadm
 },{
   group: 'GADM',
   level: '1',
-  url: 'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm36_1@EPSG%3A3857@pbf',
+  url: geoHost + '/gwc/service/tms/1.0.0/gadm%3Agadm36_1@EPSG%3A3857@pbf',
   composeTipCB: compseTipGadm,
   getShortName: getShortNameGadm
 },{
   group: 'GADM',
   level: '2',
-  url: 'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm36_2@EPSG%3A3857@pbf',
+  url: geoHost + '/gwc/service/tms/1.0.0/gadm%3Agadm36_2@EPSG%3A3857@pbf',
   composeTipCB: compseTipGadm,
   getShortName: getShortNameGadm
 },{
   group: 'GADM',
   level: '3',
-  url: 'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm36_3@EPSG%3A3857@pbf',
+  url: geoHost + '/gwc/service/tms/1.0.0/gadm%3Agadm36_3@EPSG%3A3857@pbf',
   composeTipCB: compseTipGadm,
   getShortName: getShortNameGadm
 },{
   group: 'GADM',
   level: '4',
-  url: 'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm36_4@EPSG%3A3857@pbf',
+  url: geoHost + '/gwc/service/tms/1.0.0/gadm%3Agadm36_4@EPSG%3A3857@pbf',
   composeTipCB: compseTipGadm,
   getShortName: getShortNameGadm
 },{
   group: 'GADM',
   level: '5',
-  url: 'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/gadm%3Agadm36_5@EPSG%3A3857@pbf',
+  url: geoHost + '/gwc/service/tms/1.0.0/gadm%3Agadm36_5@EPSG%3A3857@pbf',
   composeTipCB: compseTipGadm,
   getShortName: getShortNameGadm
 },{
   group: 'NUTS',
   level: 'ALL',
-  url: 'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/nuts%3ANUTS_RG_01M_2021_3857@EPSG%3A3857@pbf',
+  url: geoHost + '/gwc/service/tms/1.0.0/nuts%3ANUTS_RG_01M_2021_3857@EPSG%3A3857@pbf',
   composeTipCB: compseTipNuts,
   getShortName: getShortNameNuts
 },{
   group: 'NUTS',
   level: '0',
-  url: 'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/nuts%3ANUTS_RG_01M_2021_3857_LEVL_0@EPSG%3A3857@pbf',
+  url: geoHost + '/gwc/service/tms/1.0.0/nuts%3ANUTS_RG_01M_2021_3857_LEVL_0@EPSG%3A3857@pbf',
   composeTipCB: compseTipNuts,
   getShortName: getShortNameNuts
 },{
   group: 'NUTS',
   level: '1',
-  url: 'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/nuts%3ANUTS_RG_01M_2021_3857_LEVL_1@EPSG%3A3857@pbf',
+  url: geoHost + '/gwc/service/tms/1.0.0/nuts%3ANUTS_RG_01M_2021_3857_LEVL_1@EPSG%3A3857@pbf',
   composeTipCB: compseTipNuts,
   getShortName: getShortNameNuts
 },{
   group: 'NUTS',
   level: '2',
-  url: 'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/nuts%3ANUTS_RG_01M_2021_3857_LEVL_2@EPSG%3A3857@pbf',
+  url: geoHost + '/gwc/service/tms/1.0.0/nuts%3ANUTS_RG_01M_2021_3857_LEVL_2@EPSG%3A3857@pbf',
   composeTipCB: compseTipNuts,
   getShortName: getShortNameNuts
 },{
   group: 'NUTS',
   level: '3',
-  url: 'http://51.210.249.119:8080/geoserver/gwc/service/tms/1.0.0/nuts%3ANUTS_RG_01M_2021_3857_LEVL_3@EPSG%3A3857@pbf',
+  url: geoHost + '/gwc/service/tms/1.0.0/nuts%3ANUTS_RG_01M_2021_3857_LEVL_3@EPSG%3A3857@pbf',
   composeTipCB: compseTipNuts,
   getShortName: getShortNameNuts
 },
