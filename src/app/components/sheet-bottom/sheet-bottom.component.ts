@@ -12,12 +12,12 @@ import {MapService} from "../../services/map.service";
   styleUrls: ['./sheet-bottom.component.css']
 })
 
+
 export class SheetBottomComponent {
   okReply: boolean = false;
   doSpin: boolean = false;
   message: string = "";
-  url: string = 'http://k8s1.alia-space.com:30099/';
-  headerProperty: String = '';
+  url: string = 'http://k8s1.alia-space.com:30449/be/';
   dataSource: string = "copernicus";
   data: string = "dsm_africa";
   mosaicType: string = "raw";
