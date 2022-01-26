@@ -29,7 +29,7 @@ export class SheetBottomComponent {
 
   sources: {} = {
     DEM: ["DS"],
-    Sentinel2: ["L1C", "L2A"]
+    Sentinel-2: ["S2MSI1C", "S2MSI2A"]
   }
   objectKeys = Object.keys;
 
