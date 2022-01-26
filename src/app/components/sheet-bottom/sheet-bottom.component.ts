@@ -29,7 +29,7 @@ export class SheetBottomComponent {
 
   sources: {} = {
     DEM: ["DS"],
-    Sentinel-2: ["S2MSI1C", "S2MSI2A"]
+    Sentinel2: ["S2MSI1C", "S2MSI2A"]
   }
   objectKeys = Object.keys;
 
@@ -52,14 +52,17 @@ export class SheetBottomComponent {
     let userId = 1;
     let layer = "";
     let ROI = "";
-    for (let featureKey in this.mapService.featureSelection){
+    for (let featureKey in this.mapService.featureSelection) {
       layer = this.mapService.featureSelection[featureKey]['layerName'];
       ROI = this.mapService.featureSelection[featureKey]['shortName'];
     }
 
+    let data = this.data
+    if (data == "Sentinel2") data = "Sentinel-2";
+
     return this.url + "nuts/execute/" + userId +
       "?datasource=" + this.dataSource +
-      "&data=" + this.data +
+      "&data=" + data +
       "&start=" + this.range.get('start').value.toISOString() +
       "&stop=" + this.range.get('end').value.toISOString()  +
       "&layer=" + layer +
