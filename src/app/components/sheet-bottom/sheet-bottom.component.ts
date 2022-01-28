@@ -17,7 +17,7 @@ export class SheetBottomComponent {
   okReply: boolean = false;
   doSpin: boolean = false;
   message: string = "";
-  url: string = 'http://k8s1.alia-space.com:30449/be/';
+  url: string = '/be/';
   dataSource: string = "copernicus";
   data: string = "dsm_africa";
   mosaicType: string = "raw";
@@ -57,12 +57,12 @@ export class SheetBottomComponent {
       ROI = this.mapService.featureSelection[featureKey]['shortName'];
     }
 
-    let data = this.data
-    if (data == "Sentinel2") data = "Sentinel-2";
+    let dataSource = this.dataSource
+    if (dataSource == "Sentinel2") dataSource = "Sentinel-2";
 
     return this.url + "nuts/execute/" + userId +
-      "?datasource=" + this.dataSource +
-      "&data=" + data +
+      "?datasource=" + dataSource +
+      "&data=" + this.data +
       "&start=" + this.range.get('start').value.toISOString() +
       "&stop=" + this.range.get('end').value.toISOString()  +
       "&layer=" + layer +
