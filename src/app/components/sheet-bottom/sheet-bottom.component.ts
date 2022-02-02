@@ -17,7 +17,7 @@ export class SheetBottomComponent {
   okReply: boolean = false;
   doSpin: boolean = false;
   message: string = "";
-  url: string = '/be/';
+  url: string = 'http://localhost:9090/';
   dataSource: string = "copernicus";
   data: string = "dsm_africa";
   mosaicType: string = "raw";
@@ -37,18 +37,29 @@ export class SheetBottomComponent {
               private sideNavService: SideNavService,
               private http: HttpClient, private mapService: MapService) {}
 
-  doSubmission(){
+  doEstimation(){
     this.okReply = false;
     this.doSpin = true;
     //this.getData();
-    this.message = this.generateRequest();
+    this.message = this.generateRequest('estimate');
     this.getData(this.message).subscribe((data: boolean) => {
       this.doSpin=false;
       this.okReply=true;
     });
   }
 
-  generateRequest() {
+  doExecution(){
+    this.okReply = false;
+    this.doSpin = true;
+    //this.getData();
+    this.message = this.generateRequest('execute');
+    this.getData(this.message).subscribe((data: boolean) => {
+      this.doSpin=false;
+      this.okReply=true;
+    });
+  }
+
+  generateRequest(action) {
     let userId = 1;
     let layer = "";
     let ROI = "";
@@ -60,7 +71,7 @@ export class SheetBottomComponent {
     let dataSource = this.dataSource
     if (dataSource == "Sentinel2") dataSource = "Sentinel-2";
 
-    return this.url + "nuts/execute/" + userId +
+    return this.url + "nuts/" + action + "/" + userId +
       "?datasource=" + dataSource +
       "&data=" + this.data +
       "&start=" + this.range.get('start').value.toISOString() +

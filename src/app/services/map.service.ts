@@ -16,12 +16,6 @@ let geoHost='http://51.210.249.119:8080/geoserver';
 
 export const layerArray: Layer[] = [{
   group: 'GADM',
-  level: 'ALL',
-  url: geoHost + '/gwc/service/tms/1.0.0/gadm%3Agadm@EPSG%3A3857@pbf',
-  composeTipCB: compseTipGadm,
-  getShortName: getShortNameGadm
-},{
-  group: 'GADM',
   level: '0',
   url: geoHost + '/gwc/service/tms/1.0.0/gadm%3Agadm36_0@EPSG%3A3857@pbf',
   composeTipCB: compseTipGadm,
@@ -56,12 +50,6 @@ export const layerArray: Layer[] = [{
   url: geoHost + '/gwc/service/tms/1.0.0/gadm%3Agadm36_5@EPSG%3A3857@pbf',
   composeTipCB: compseTipGadm,
   getShortName: getShortNameGadm
-},{
-  group: 'NUTS',
-  level: 'ALL',
-  url: geoHost + '/gwc/service/tms/1.0.0/nuts%3ANUTS_RG_01M_2021_3857@EPSG%3A3857@pbf',
-  composeTipCB: compseTipNuts,
-  getShortName: getShortNameNuts
 },{
   group: 'NUTS',
   level: '0',
