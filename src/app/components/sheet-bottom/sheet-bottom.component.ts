@@ -12,12 +12,12 @@ import {MapService} from "../../services/map.service";
   styleUrls: ['./sheet-bottom.component.css']
 })
 
+
 export class SheetBottomComponent {
   okReply: boolean = false;
   doSpin: boolean = false;
   message: string = "";
   url: string = 'http://localhost:9090/';
-  headerProperty: String = '';
   dataSource: string = "copernicus";
   data: string = "dsm_africa";
   mosaicType: string = "raw";
@@ -27,6 +27,11 @@ export class SheetBottomComponent {
     end: new FormControl()
   });
 
+  sources: {} = {
+    DEM: ["DS"],
+    Sentinel2: ["S2MSI1C", "S2MSI2A"]
+  }
+  objectKeys = Object.keys;
 
   constructor(private _bottomSheetRef: MatBottomSheetRef<SheetBottomComponent>,
               private sideNavService: SideNavService,
@@ -47,16 +52,19 @@ export class SheetBottomComponent {
     let userId = 1;
     let layer = "";
     let ROI = "";
-    for (let featureKey in this.mapService.featureSelection){
+    for (let featureKey in this.mapService.featureSelection) {
       layer = this.mapService.featureSelection[featureKey]['layerName'];
       ROI = this.mapService.featureSelection[featureKey]['shortName'];
     }
 
-    return this.url + "nuts/execute/" + userId + 
-      "?datasource=" + this.dataSource +
-      "&data=" + this.data + 
-      "&start=" + this.range.get('start').value.toISOString() + 
-      "&stop=" + this.range.get('end').value.toISOString()  + 
+    let dataSource = this.dataSource
+    if (dataSource == "Sentinel2") dataSource = "Sentinel-2";
+
+    return this.url + "nuts/execute/" + userId +
+      "?datasource=" + dataSource +
+      "&data=" + this.data +
+      "&start=" + this.range.get('start').value.toISOString() +
+      "&stop=" + this.range.get('end').value.toISOString()  +
       "&layer=" + layer +
       "&ROI=" + ROI;
 
