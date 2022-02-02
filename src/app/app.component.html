@@ -1,12 +1,29 @@
+<header style="padding: 0px">
+  <!--
+  <div class="title">
+    <mat-drawer-content>
+      <button mat-raised-button (click)="[sidenav-left].drawer.toggle()">Toggle drawer</button>
+    </mat-drawer-content>
+    Area Selector - Alia Space
+    class="left-bar"
+  </div>-->
+  <app-topbar></app-topbar>
+</header>
 <main>
   <div style="height: 100%; width: 100%">
   <mat-drawer-container style="height: 100%; width: 100%" >
+
+
     <app-sidenav-left></app-sidenav-left>
     <div class="map-container">
-      <router-outlet></router-outlet>
+      <app-map [map]="map"></app-map>
     </div>
   </mat-drawer-container>
 
   </div>
 
 </main>
+<footer>
+  <app-scaleline [map]="map"></app-scaleline>
+  <app-mouse-position [map]="map" positionTemplate="{x}, {y} m"></app-mouse-position>
+</footer>

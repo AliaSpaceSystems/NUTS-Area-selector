@@ -27,21 +27,15 @@ import {layerArray, MapService} from "../../services/map.service";
 
 import {Polygon} from "ol/geom"
 
-import TileLayer from 'ol/layer/Tile';
-import OSM from 'ol/source/OSM';
-import {take, tap} from 'rxjs/operators';
-
 class SelectableVectorTileLayer {
   vectorTileLayer: VectorTile<any>;
   selectionLayer: VectorTile<any>;
   vectorTileSource: VectorTileSource<any>;
   selection: {};
 
-
-
   constructor(private map: Map, private comp: any, private layerID: number, private layerName: string, private globalSelection: {},
               private url: string, private composeTipCB: (val: object) => string,
-              private getShortNome: (val: object) => string, private mapService: MapService) {
+              private getShortNome: (val: object) => string) {
 
     this.selection = globalSelection;
 
@@ -50,7 +44,7 @@ class SelectableVectorTileLayer {
       tileGrid: createXYZ({maxZoom: 19}),
       format: new MVT({featureClass: Feature}),
       url: url +
-        '/{z}/{x}/{-y}.pbf?apikey=b2bc0eaa-d980-4df0-b118-de851903cb63'
+        '/{z}/{x}/{-y}.pbf'
     })
 
     this.vectorTileLayer = new VectorTile({
@@ -131,26 +125,14 @@ class SelectableVectorTileLayer {
       feature['shortName'] = this.getShortNome(feature.getProperties());
       feature['selectedAtZoom'] = this.map.getView().getZoom();
 
-
-      const identifier = this.layerID + '-' + fid;
-      if (identifier in this.selection) {
+      if (this.layerID + '-' + fid in this.selection) {
         console.log("fid to be removed: " + fid);
         delete this.selection[this.layerID + '-' + fid];
         this.selectionLayer.changed();
-        this.mapService.selectedLayers.pipe(
-          take(1)
-        ).subscribe((identifiers: string[]) => {
-          this.mapService._selectedLayers.next(identifiers.filter(oldId => oldId !== identifier));
-        });
+
       } else {
 
-        this.mapService.selectedLayers.pipe(
-          take(1)
-        ).subscribe((layers: any[]) => {
-          this.mapService._selectedLayers.next(layers.concat(identifier));
-        });
-
-        this.selection[identifier] = feature;
+        this.selection[this.layerID + '-' + fid] = feature;
         this.selectionLayer.changed();
 
       }
@@ -182,7 +164,7 @@ class SelectableVectorTileLayer {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapComponent implements OnInit, AfterViewInit {
-  map: Map;
+  @Input() map: Map;
   private popupOverlay: Overlay;
   @ViewChild('popup') popup: ElementRef;
   /* global preview layer???
@@ -217,19 +199,6 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    console.log('ngOnInit MapComponent');
-
-     this.map = new Map({
-      view: new View({
-        center: [0, 0],
-        zoom: 1,
-      }),
-      layers: [
-        new TileLayer({
-          source: new OSM(),
-        }),
-      ]
-    });
 
     this.vectorLayers = {};
     this.mapService.featureSelection = {};
@@ -257,7 +226,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     layerArray.forEach( (layer,index) => {
       this.vectorLayers[index] = new SelectableVectorTileLayer(this.map, this ,index,
         layer.group + "_" + layer.level, this.globalSelection, layer.url,
-        layer.composeTipCB, layer.getShortName, this.mapService);
+        layer.composeTipCB, layer.getShortName);
       }
     )
     /* global preview layer???
