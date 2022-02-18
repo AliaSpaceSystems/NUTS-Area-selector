@@ -17,7 +17,7 @@ export class SheetBottomComponent {
   okReply: boolean = false;
   doSpin: boolean = false;
   message: string = "";
-  url: string = '/be/';
+  url: string = '/bedev/';
   dataSource: string = "copernicus";
   data: string = "dsm_africa";
   mosaicType: string = "raw";
